@@ -1,0 +1,15 @@
+
+<div class="auth-container">
+    <router-outlet></router-outlet>
+  <button mat-raised-button color="primary" (click)="navigateToLogin()">
+    <mat-icon>login</mat-icon> Iniciar sesión
+  </button>
+
+  <div *ngIf="errorMessage" class="error-message">
+    <mat-icon>error</mat-icon>
+    {{ errorMessage }}
+    <button mat-icon-button (click)="clearError()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+</div>
