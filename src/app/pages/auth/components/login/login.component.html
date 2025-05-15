@@ -1,0 +1,72 @@
+<mat-card class="login-card">
+  <mat-card-header>
+    <mat-card-title>Iniciar Sesión</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input 
+          matInput 
+          formControlName="email"
+          type="email"
+          required
+          placeholder="ejemplo@mail.com"
+        >
+        <mat-icon matPrefix>mail</mat-icon>
+        @if(loginForm.get('email')?.hasError('required')){
+          <mat-error>Email es requerido</mat-error>
+        }
+        @if(loginForm.get('email')?.hasError('email')){
+          <mat-error>Ingresa un email válido</mat-error>
+        }        
+      </mat-form-field>
+
+     
+      <mat-form-field appearance="outline">
+        <mat-label>Contraseña</mat-label>
+        <input 
+          matInput 
+          formControlName="password"
+          type="password"
+          required
+          #passwordInput
+          placeholder="Ingresa tu contraseña"
+          title="Contraseña"
+        >
+        <mat-icon matPrefix>lock</mat-icon>
+        <button 
+          mat-icon-button 
+          matSuffix 
+          type="button"
+          (click)="togglePasswordVisibility(passwordInput)"
+        >
+          <mat-icon>visibility</mat-icon>
+        </button>
+        @if(loginForm.get('password')?.hasError('required')){
+          <mat-error>Contraseña es requerida</mat-error>
+        }
+        @if(loginForm.get('password')?.hasError('minlength')){
+          <mat-error>Mínimo 6 caracteres</mat-error>
+        }        
+      </mat-form-field>
+     
+      <button 
+        mat-raised-button 
+        color="primary" 
+        type="submit"
+        class="full-width"
+        [disabled]="!loginForm.valid"
+      >
+        Ingresar
+      </button>
+    </form>
+
+    <div class="register-link">
+      ¿No tienes cuenta? <a mat-button routerLink="/auth/register">Regístrate</a>
+    </div>
+  </mat-card-content>
+</mat-card>

@@ -31,7 +31,7 @@ export class AuthService {
       tap(response => {
         this.setToken(response.token);
         this.isAuthenticatedSubject.next(true);
-        this.router.navigate(['/dashboard']); 
+        //this.router.navigate(['/dashboard']); 
       })
     );
   }
