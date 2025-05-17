@@ -11,7 +11,7 @@ export class AuthService {
   private authUrl = `${environment.apiUrl}/auth`; 
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   private tokenKey = 'auth_token';
-
+ private passwordResetTokenKey = 'reset_token';
   
   isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
@@ -23,6 +23,20 @@ export class AuthService {
     this.checkInitialAuth();
   }
 
+   // Método para confirmar/establecer nueva contraseña
+   setPassword(token: string, password: string): Observable<any> {
+    return this.http.post(`${this.authUrl}/activate`, { token, password })
+  }
+
+  // Método para guardar el token de recuperación temporalmente
+  setPasswordResetToken(token: string): void {
+    localStorage.setItem(this.passwordResetTokenKey, token);
+  }
+
+  getPasswordResetToken(): string | null {
+    return localStorage.getItem(this.passwordResetTokenKey);
+  }
+  
   login(email: string, password: string): Observable<{ token: string }> {
     return this.http.post<{ token: string }>(`${this.authUrl}/login`, {
       email,

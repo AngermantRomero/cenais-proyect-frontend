@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from '../auth/components/login/login.component';
 import { AuthComponent } from './auth.component'; 
-
+import { SetPasswordComponent } from './components/set-password/set-password.component';
 export const authRoutes: Routes = [
   {
     path: '',
@@ -13,10 +13,10 @@ export const authRoutes: Routes = [
         component: LoginComponent
       },
       {
-        path: '',
-        redirectTo: 'login',
-        pathMatch: 'full'
-      }
+      path: 'set-password',
+      component: SetPasswordComponent
+  },
+    
     ]
   }
 ];
