@@ -36,7 +36,12 @@ export class AuthService {
   getPasswordResetToken(): string | null {
     return localStorage.getItem(this.passwordResetTokenKey);
   }
-  
+ /* resetPassword(email: string) {
+    return this.http.post<{ message: string }>(
+      `${this.authUrl}/auth/forgot-password`,
+      { email }
+    );
+  }*/
   login(email: string, password: string): Observable<{ token: string }> {
     return this.http.post<{ token: string }>(`${this.authUrl}/login`, {
       email,
