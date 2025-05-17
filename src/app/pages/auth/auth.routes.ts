@@ -7,6 +7,11 @@ export const authRoutes: Routes = [
     path: '',
     component: AuthComponent,
     children: [
+       {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'login'
+      },
       {
         path: 'login',
         title: 'Iniciar sesión',

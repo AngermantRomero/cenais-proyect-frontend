@@ -71,9 +71,9 @@ export class SetPasswordComponent {
  onSubmit() {
     if (this.passwordForm.invalid || this.isLoading) return;
 
-    const { password} = this.passwordForm.value;
+    const { newPassword } = this.passwordForm.value;
     this.isLoading = true;
-    this.authService.setPassword(this.token, password).subscribe({
+    this.authService.setPassword(this.token, newPassword).subscribe({
       next: () => {
         this.showSnackbar('Contraseña actualizada con éxito', 'success');
         this.passwordForm.reset();
@@ -81,6 +81,7 @@ export class SetPasswordComponent {
       },
       error: (err) => {
         this.showSnackbar(err.error?.message || 'Error al actualizar la contraseña', 'error');
+        this.isLoading = false
       },
       complete: () => this.isLoading = false
     });
