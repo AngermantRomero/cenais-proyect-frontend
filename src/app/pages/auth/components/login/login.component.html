@@ -54,15 +54,22 @@
         }        
       </mat-form-field>
      
-      <button 
-        mat-raised-button 
-        color="primary" 
-        type="submit"
-        class="full-width"
-        [disabled]="!loginForm.valid"
-      >
-        Ingresar
-      </button>
+    <button 
+  mat-raised-button 
+  color="primary" 
+  type="submit"
+  class="full-width"
+  [disabled]="!loginForm.valid || isLoading"
+>
+  @if (isLoading) {
+    <div class="button-loading">
+      <mat-spinner diameter="24" color="accent"></mat-spinner>
+      <span class="spinner-text">Procesando...</span>
+    </div>
+  } @else {
+    Ingresar
+  }
+</button>
     </form>
 
     <div class="register-link">
