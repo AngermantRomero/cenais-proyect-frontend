@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { environment } from '../../../enviroments/enviroment';
+import { SingleResponse } from '../interfaces/http.responses.interface';
+import { User } from '../interfaces/user.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -10,8 +12,7 @@ import { environment } from '../../../enviroments/enviroment';
 export class AuthService {
   private authUrl = `${environment.apiUrl}/auth`; 
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
-  private tokenKey = 'auth_token';
- private passwordResetTokenKey = 'reset_token';
+
   
   isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
@@ -23,46 +24,41 @@ export class AuthService {
     this.checkInitialAuth();
   }
 
-   // Método para confirmar/establecer nueva contraseña
-   setPassword(token: string, password: string): Observable<any> {
-    return this.http.post(`${this.authUrl}/activate`, { token, password })
-  }
-
-  // Método para guardar el token de recuperación temporalmente
-  setPasswordResetToken(token: string): void {
-    localStorage.setItem(this.passwordResetTokenKey, token);
-  }
-
-  getPasswordResetToken(): string | null {
-    return localStorage.getItem(this.passwordResetTokenKey);
-  }
-  
-  login(email: string, password: string): Observable<{ token: string }> {
-    return this.http.post<{ token: string }>(`${this.authUrl}/login`, {
+  login(email: string, password: string): Observable<SingleResponse<User>> {
+    return this.http.post<SingleResponse<User>>(`${this.authUrl}/login`, {
       email,
       password
     }).pipe(
       tap(response => {
-        this.setToken(response.token);
+        if (response.data) {
+        this.setUserData(response.data);
         this.isAuthenticatedSubject.next(true);
-        //this.router.navigate(['/dashboard']); 
+        }
       })
     );
   }
 
   logout(): void {
-    localStorage.removeItem(this.tokenKey);
+    localStorage.removeItem('auth_token');
     this.isAuthenticatedSubject.next(false);
     this.router.navigate(['/auth/login']);
   }
 
   getToken(): string | null {
-    return localStorage.getItem(this.tokenKey);
+    return localStorage.getItem('auth_token');
   }
 
-  private setToken(token: string): void {
-    localStorage.setItem(this.tokenKey, token);
+  private setUserData(data: User): void {
+    const {accessToken, ...user} = data;
+    localStorage.setItem('auth_user', JSON.stringify(user));
+    localStorage.setItem('auth_token', accessToken || '');
   }
+
+  private getUserData(): User | null {
+    const user = localStorage.getItem('auth_user');
+    return user ? JSON.parse(user) : null;
+  }
+  
 
   private checkInitialAuth(): void {
     const token = this.getToken();
