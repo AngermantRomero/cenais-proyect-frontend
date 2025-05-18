@@ -1,10 +1,12 @@
 import {
-  Platform,
   _CdkPrivateStyleLoader,
-  _bindEventWithOptions,
+  _bindEventWithOptions
+} from "./chunk-XHZB267A.js";
+import {
+  Platform,
   coerceElement,
   coerceNumberProperty
-} from "./chunk-OHWGOMME.js";
+} from "./chunk-LRHKH4CB.js";
 import {
   DOCUMENT
 } from "./chunk-WLTQXWYS.js";
@@ -506,4 +508,4 @@ export {
   CdkTextareaAutosize,
   TextFieldModule
 };
-//# sourceMappingURL=chunk-GQU6XGK5.js.map
+//# sourceMappingURL=chunk-3S7YCPQR.js.map
