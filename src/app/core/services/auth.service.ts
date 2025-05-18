@@ -30,7 +30,7 @@ export class AuthService {
 
   resetPassword(email: string) {
     return this.http.post<{ message: string }>(
-      `${this.authUrl}/auth/forgot-password`,
+      `${this.authUrl}/forgot-password`,
       { email }
     );
   }
