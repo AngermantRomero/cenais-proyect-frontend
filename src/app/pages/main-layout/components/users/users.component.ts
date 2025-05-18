@@ -1,41 +1,51 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../../../core/services/user.service';
-import { User ,Role} from '../../../../core/interfaces/user.interface';
+import { User, Role } from '../../../../core/interfaces/user.interface';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
-import { MatIconButton } from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { CommonModule } from '@angular/common';
+
 @Component({
-  selector: 'app-users',
+  selector: 'app-user',
   standalone: true,
-   imports: [
+  imports: [
+    CommonModule,
     MatTableModule,
     MatIconModule,
-    MatIconButton
+    MatButtonModule,
+    MatCardModule
   ],
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss']
 })
 export class UsersComponent implements OnInit {
-  users: (User & { showToken?: boolean} )[] = [];
-  displayedColumns: string[] = ['id', 'name','lastName','isActive', 'email', 'role','phone','accessToken',]; // Ajusta según tus props
+  users: User[] = [];
+  displayedColumns: string[] = ['name', 'lastName', 'isActive', 'email', 'role', 'phone'];
 
   constructor(private userService: UserService) {}
 
   ngOnInit(): void {
     this.userService.getUsers().subscribe({
       next: (response) => {
-        this.users = response.data.map(users=>({... users,showToken:false}));
+        this.users = response.data;
       },
-      
       error: (err) => {
         console.error('Error al cargar usuarios:', err);
       }
     });
   }
-  toggleTokenVisibility(user: User & { showToken?: boolean }): void {
-    user.showToken = !user.showToken;
-  }
-   getRoleName(role: Role): string {
+
+  getRoleName(role: Role): string {
     return role?.name || 'Sin rol';
+  }
+
+  getUserStatusIcon(isActive: boolean): string {
+    return isActive ? 'check_circle' : 'cancel';
+  }
+
+  getUserStatusColor(isActive: boolean): string {
+    return isActive ? 'primary' : 'warn';
   }
 }
