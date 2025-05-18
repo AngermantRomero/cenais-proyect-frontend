@@ -1,11 +1,41 @@
-import { Component } from '@angular/core';
-
+import { Component, OnInit } from '@angular/core';
+import { UserService } from '../../../../core/services/user.service';
+import { User ,Role} from '../../../../core/interfaces/user.interface';
+import { MatTableModule } from '@angular/material/table';
+import { MatIconModule } from '@angular/material/icon';
+import { MatIconButton } from '@angular/material/button';
 @Component({
   selector: 'app-users',
-  imports: [],
+  standalone: true,
+   imports: [
+    MatTableModule,
+    MatIconModule,
+    MatIconButton
+  ],
   templateUrl: './users.component.html',
-  styleUrl: './users.component.scss'
+  styleUrls: ['./users.component.scss']
 })
-export class UsersComponent {
+export class UsersComponent implements OnInit {
+  users: (User & { showToken?: boolean} )[] = [];
+  displayedColumns: string[] = ['id', 'name','lastName','isActive', 'email', 'role','phone','accessToken',]; // Ajusta según tus props
 
+  constructor(private userService: UserService) {}
+
+  ngOnInit(): void {
+    this.userService.getUsers().subscribe({
+      next: (response) => {
+        this.users = response.data.map(users=>({... users,showToken:false}));
+      },
+      
+      error: (err) => {
+        console.error('Error al cargar usuarios:', err);
+      }
+    });
+  }
+  toggleTokenVisibility(user: User & { showToken?: boolean }): void {
+    user.showToken = !user.showToken;
+  }
+   getRoleName(role: Role): string {
+    return role?.name || 'Sin rol';
+  }
 }

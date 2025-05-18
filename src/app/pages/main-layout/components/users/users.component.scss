@@ -1,0 +1,38 @@
+.full-width-table {
+  width: 100%;
+}
+
+.no-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  color: #666;
+}
+
+.no-data mat-icon {
+  font-size: 3rem;
+  width: 3rem;
+  height: 3rem;
+  margin-bottom: 1rem;
+}
+
+.active {
+  color: green;
+}
+
+.inactive {
+  color: red;
+}
+
+.token {
+  font-family: monospace;
+  font-size: 0.8rem;
+   margin-left: 8px;
+}
+
+.token-masked {
+  letter-spacing: 0.3em;
+  margin-left: 8px;
+}
