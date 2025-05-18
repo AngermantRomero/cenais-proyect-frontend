@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -37,6 +37,7 @@ export class LoginComponent {
 
   private authService = inject(AuthService);
   private snackBar = inject(MatSnackBar);
+  private router = inject(Router);
 
 
   loginForm = new FormGroup({
@@ -54,18 +55,23 @@ onSubmit() {
 
   const { email, password } = this.loginForm.value as { email: string; password: string };;
   console.log('Datos para login:', { email, password });
+  this.isLoading = true; 
   this.authService.login(email, password).subscribe({
     next: (response) => {
       console.log('Login exitoso:', response);
       this.snackBar.open('Login exitoso', 'Cerrar', {
         duration: 3000
       });
+      this.loginForm.reset();
+      this.isLoading = false; 
+      this.router.navigate(['/dashboard']);
     },
     error: (error) => {
       console.error('Error al iniciar sesión:', error);
       this.snackBar.open('Error al iniciar sesión', 'Cerrar', {
         duration: 3000
       });
+      this.isLoading = false;
     }
   });
   

@@ -1,0 +1,36 @@
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav mode="side" opened class="sidenav">
+    <div class="sidenav-content-wrapper">
+      <div class="nav-items">
+        <h2 class="app-title">Mi App</h2>
+        <mat-nav-list>
+          @for (item of menuItems; track item.id) {
+            <a
+              class="nav-link"
+              mat-list-item
+              [routerLink]="item.path"
+              routerLinkActive="active-link"
+            >
+              <div class="nav-item">
+                <mat-icon matListIcon>{{ item.icon }}</mat-icon>
+              <span>{{ item.label }}</span>
+              </div>
+            </a>
+            <mat-divider></mat-divider>
+          }
+        </mat-nav-list>
+      </div>
+
+      <div class="logout-footer">
+        <a class="logout-footer-link" (click)="logout()">
+          <mat-icon matListIcon>logout</mat-icon>
+          <span>Cerrar Sesión</span>
+        </a>
+      </div>
+    </div>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="sidenav-content">
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>
