@@ -24,21 +24,16 @@ export class AuthService {
     this.checkInitialAuth();
   }
 
-  // Método para confirmar/establecer nueva contraseña
-   setPassword(token: string, password: string): Observable<any> {
+  setPassword(token: string, password: string): Observable<any> {
     return this.http.post(`${this.authUrl}/activate`, { token, password })
   }
 
-  // Método para guardar el token de recuperación temporalmente
-  /* setPasswordResetToken(token: string): void {
-    localStorage.setItem(this.passwordResetTokenKey, token);
+  resetPassword(email: string) {
+    return this.http.post<{ message: string }>(
+      `${this.authUrl}/auth/forgot-password`,
+      { email }
+    );
   }
-
-  getPasswordResetToken(): string | null {
-    return localStorage.getItem(this.passwordResetTokenKey);
-  } */
-  
-
   login(email: string, password: string): Observable<SingleResponse<User>> {
     return this.http.post<SingleResponse<User>>(`${this.authUrl}/login`, {
       email,
