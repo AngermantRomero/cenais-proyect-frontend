@@ -44,8 +44,4 @@ export class UsersComponent implements OnInit {
   getUserStatusIcon(isActive: boolean): string {
     return isActive ? 'check_circle' : 'cancel';
   }
-
-  getUserStatusColor(isActive: boolean): string {
-    return isActive ? 'primary' : 'warn';
-  }
 }

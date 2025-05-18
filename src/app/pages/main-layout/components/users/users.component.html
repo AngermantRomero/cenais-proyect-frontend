@@ -24,7 +24,7 @@
         <ng-container matColumnDef="isActive">
           <th mat-header-cell *matHeaderCellDef>Estado</th>
           <td mat-cell *matCellDef="let user">
-            <mat-icon [color]="getUserStatusColor(user.isActive)">
+            <mat-icon [class.active]="user.isActive" [class.inactive]="!user.isActive">
               {{ getUserStatusIcon(user.isActive) }}
             </mat-icon>
           </td>

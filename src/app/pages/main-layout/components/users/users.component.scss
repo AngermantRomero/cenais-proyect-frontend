@@ -91,6 +91,14 @@
   }
 }
 
+.active {
+  color: green;
+}
+
+.inactive {
+  color: red;
+}
+
 // Estilos responsivos
 @media (max-width: 768px) {
   .user-card {
