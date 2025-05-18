@@ -33,7 +33,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class LoginComponent {
   email: string = '';
   password: string = '';
- isLoading = false;  
+  isLoading = false;  
 
   private authService = inject(AuthService);
   private snackBar = inject(MatSnackBar);

@@ -54,7 +54,7 @@ export class ForgotPasswordComponent {
     const { email } = this.forgotForm.value;
     this.isLoading = true;
 
-    /*this.authService.sendPasswordResetEmail(email).subscribe({
+    this.authService.resetPassword(email).subscribe({
       next: () => {
         this.showSnackbar('Enlace de recuperación enviado a tu email', 'success');
         this.forgotForm.reset();
@@ -65,7 +65,7 @@ export class ForgotPasswordComponent {
         this.isLoading = false;
       },
       complete: () => this.isLoading = false
-    });*/
+    });
   }
 
   private showSnackbar(message: string, type: 'success' | 'error') {
