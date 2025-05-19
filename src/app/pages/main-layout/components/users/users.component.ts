@@ -6,7 +6,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { CommonModule } from '@angular/common';
-
+import { MatDialog } from '@angular/material/dialog';
+import { UserFormComponent } from './components/user-form/user-form.component';
 @Component({
   selector: 'app-user',
   standalone: true,
@@ -15,16 +16,17 @@ import { CommonModule } from '@angular/common';
     MatTableModule,
     MatIconModule,
     MatButtonModule,
-    MatCardModule
+    MatCardModule,
+    MatButtonModule,
   ],
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss']
 })
 export class UsersComponent implements OnInit {
   users: User[] = [];
-  displayedColumns: string[] = ['name', 'lastName', 'isActive', 'email', 'role', 'phone'];
+  displayedColumns: string[] = ['name', 'lastName', 'isActive', 'email', 'role', 'phone','actions'];
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService,private dialog:MatDialog) {}
 
   ngOnInit(): void {
     this.userService.getUsers().subscribe({
@@ -39,6 +41,28 @@ export class UsersComponent implements OnInit {
 
   getRoleName(role: Role): string {
     return role?.name || 'Sin rol';
+  }
+  loadUsers(): void {
+  this.userService.getUsers().subscribe({
+    next: (response) => {
+      this.users = response.data;
+    },
+    error: (err) => {
+      console.error('Error al cargar usuarios:', err);
+    }
+  });
+}
+   openUserForm(user?: User): void {
+    const dialogRef = this.dialog.open(UserFormComponent, {
+      width: '680px',
+      data: { user }
+    });
+
+    dialogRef.afterClosed().subscribe((result:boolean) => {
+      if (result) {
+        this.loadUsers(); 
+      }
+    });
   }
 
   getUserStatusIcon(isActive: boolean): string {

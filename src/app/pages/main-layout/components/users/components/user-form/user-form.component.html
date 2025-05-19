@@ -1,0 +1,70 @@
+<div class="user-form-container">
+  <h2 class="form-title">Editor Usuario</h2>
+
+  <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="form">
+    <div class="form-section">
+      <h3 class="section-title">Datos de Usuario</h3>
+      
+      <!-- Nombre -->
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Nombre *</mat-label>
+        <input matInput formControlName="name" placeholder="Ej: Admin4" required>
+        @if (userForm.get('name')?.hasError('required')) {
+          <mat-error>El nombre es obligatorio</mat-error>
+        }
+      </mat-form-field>
+      
+      <!-- Apellido -->
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Apellidos *</mat-label>
+        <input matInput formControlName="lastName" placeholder="Ej: Admin4" required>
+        @if (userForm.get('lastName')?.hasError('required')) {
+          <mat-error>El apellido es obligatorio</mat-error>
+        }
+      </mat-form-field>
+
+      <!-- Email -->
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Email *</mat-label>
+        <input matInput formControlName="email" type="email" placeholder="Ej: admin4@gmail.com" required>
+        @if (userForm.get('email')?.hasError('required')) {
+          <mat-error>El email es obligatorio</mat-error>
+        }
+        @if (userForm.get('email')?.hasError('email')) {
+          <mat-error>Ingresa un email válido</mat-error>
+        }
+      </mat-form-field>
+
+      <!-- Rol -->
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Rol *</mat-label>
+        <mat-select formControlName="roleId" required>
+          <mat-option value="admin">Administrador</mat-option>
+          <mat-option value="technician">Técnico</mat-option>
+          <mat-option value="guest">Invitado</mat-option>
+        </mat-select>
+        @if (userForm.get('roleId')?.hasError('required')) {
+          <mat-error>Selecciona un rol</mat-error>
+        }
+      </mat-form-field>
+    </div> <!-- Cierre del primer form-section -->
+
+    <div class="form-section">
+      <!-- Teléfono -->
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Teléfono *</mat-label>
+        <input matInput formControlName="phone" placeholder="Ej: 3514229082" required>
+      </mat-form-field>
+    </div> <!-- Cierre del segundo form-section -->
+
+    <!-- Botones -->
+    <div class="form-actions">
+      <button mat-stroked-button type="button" (click)="onCancel()" class="cancel-button">
+        Cancelar
+      </button>
+      <button mat-raised-button color="primary" type="submit" [disabled]="userForm.invalid" class="submit-button">
+        {{ isEditMode ? 'Actualizar' : 'Guardar' }}
+      </button>
+    </div>
+  </form>
+</div>
