@@ -135,3 +135,4 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+.angular/cache/19.2.11/cenais-frontend/vite/deps/@angular_cdk_scrolling.js
