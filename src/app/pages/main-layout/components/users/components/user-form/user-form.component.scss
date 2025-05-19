@@ -1,0 +1,72 @@
+.user-form-container {
+  padding: 24px;
+  max-width: 600px;
+  margin: 0 auto;
+  font-family: 'Roboto', sans-serif; 
+
+  .form-title {
+    text-align: center;
+    margin-bottom: 24px;
+    color: #3f51b5; 
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
+
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    .form-field, .checkbox {
+      width: 100%;
+    }
+
+   
+    mat-form-field {
+      .mat-form-field-outline {
+        color: rgba(0, 0, 0, 0.12); 
+      }
+      &.mat-focused .mat-form-field-outline-thick {
+        color: #3f51b5;
+      }
+    }
+
+    
+    .checkbox {
+      margin-top: 8px;
+      .mat-checkbox-frame {
+        border-color: rgba(0, 0, 0, 0.54);
+      }
+      .mat-checkbox-checked .mat-checkbox-background {
+        background-color: #3f51b5; 
+      }
+    }
+
+    /* Botones */
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 16px;
+      margin-top: 16px;
+
+      .cancel-button {
+        color: #f44336; 
+        &:hover {
+          background-color: rgba(244, 67, 54, 0.04);
+        }
+      }
+
+      .submit-button {
+        background-color: #3f51b5;
+        color: white;
+        &:hover {
+          background-color: #303f9f;
+        }
+        &:disabled {
+          background-color: rgba(0, 0, 0, 0.12); 
+          color: rgba(0, 0, 0, 0.38);
+        }
+      }
+    }
+  }
+}
