@@ -1,161 +1,159 @@
-/* Variables reutilizables */
-$primary-color: #3f51b5;
-$error-color: #f44336;
-$border-color: #e0e0e0;
-$text-color: #333;
-$light-gray: #f5f5f5;
-$spacing-unit: 16px;
+// users.component.scss
 
-.user-form-container {
-  max-width: 800px;
-  margin: $spacing-unit auto;
-  padding: $spacing-unit * 1.5;
-  background: white;
+.user-management-container {
+  margin: 16px;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  font-family: 'Roboto', sans-serif;
+  overflow: hidden;
+  background: white;
 
-  .form-title {
-    color: $primary-color;
-    margin-bottom: $spacing-unit * 1.5;
-    font-size: 24px;
-    font-weight: 500;
-    text-align: center;
-  }
-
-  .form {
+  .management-header {
     display: flex;
-    flex-direction: column;
-    gap: $spacing-unit;
-  }
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    background-color: #fafafa;
+    border-bottom: 1px solid #e0e0e0;
 
-  .form-section {
-    margin-bottom: $spacing-unit;
-
-    .section-title {
-      color: darken($text-color, 10%);
-      margin: $spacing-unit 0 ($spacing-unit / 2);
-      font-size: 18px;
+    .management-title {
+      font-size: 20px;
       font-weight: 500;
-      border-bottom: 1px solid $border-color;
-      padding-bottom: 8px;
+      margin-right: 16px;
+      color: #212121;
+    }
+
+    .management-subtitle {
+      color: #757575;
+      font-size: 14px;
+    }
+
+    .add-user-button {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      mat-icon {
+        font-size: 20px;
+        height: 20px;
+        width: 20px;
+      }
     }
   }
 
-  .form-field {
+  .users-table {
     width: 100%;
-    margin-bottom: $spacing-unit;
+    margin-top: 8px;
 
-    mat-label {
+    th.mat-header-cell {
       font-weight: 500;
-      color: $text-color;
-
-      &::after {
-        content: ' *';
-        color: $error-color;
-        opacity: 0;
-        transition: opacity 0.2s;
-      }
-
-      &.mat-form-field-empty::after {
-        opacity: 1;
-      }
+      font-size: 14px;
+      color: #212121;
+      padding: 12px 16px;
+      border-bottom: 1px solid #e0e0e0;
     }
 
-    .mat-input-element {
-      color: $text-color;
-      font-size: 15px;
+    td.mat-cell {
+      padding: 12px 16px;
+      vertical-align: middle;
+      border-bottom: 1px solid #f5f5f5;
     }
 
-    .mat-form-field-outline {
-      color: $border-color;
+    .actions-column {
+      width: 120px;
+      text-align: center;
     }
 
-    .mat-form-field-outline-thick {
-      color: $primary-color;
+    .actions-cell {
+      padding: 0 16px !important;
     }
 
-    .mat-error {
-      font-size: 12px;
-      margin-top: 4px;
-    }
-  }
+    .actions-container {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
 
-  .form-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: $spacing-unit;
-    margin-top: $spacing-unit * 1.5;
-    padding-top: $spacing-unit;
-    border-top: 1px solid $border-color;
+      button.mat-icon-button {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.2s;
 
-    button {
-      min-width: 120px;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+        &:hover {
+          background-color: rgba(0, 0, 0, 0.04);
+        }
 
-      &.cancel-button {
-        color: $text-color;
-        border-color: $border-color;
-      }
-
-      &.submit-button {
-        &:disabled {
-          background-color: lighten($primary-color, 30%);
-          color: white;
+        mat-icon {
+          font-size: 20px;
         }
       }
     }
-  }
 
-  /* Estilos para el checkbox */
-  .mat-checkbox {
-    margin: $spacing-unit 0;
+    .role-badge {
+      padding: 4px 12px;
+      border-radius: 16px;
+      background-color: #e0e0e0;
+      font-size: 12px;
+      font-weight: 500;
+      display: inline-block;
 
-    .mat-checkbox-label {
-      color: $text-color;
-    }
-  }
-
-  /* Estilos responsivos */
-  @media (max-width: 768px) {
-    padding: $spacing-unit;
-
-    .form-actions {
-      flex-direction: column;
-
-      button {
-        width: 100%;
+      &.admin-role {
+        background-color: #ffecb3;
+        color: #ff8f00;
       }
     }
 
-    .form-field {
-      margin-bottom: $spacing-unit / 1.5;
+    tr.mat-row {
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.04);
+      }
+    }
+  }
+
+  .no-users-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 24px;
+    color: #757575;
+
+    mat-icon {
+      color: #3f51b5; // Color indigo-500 sin necesidad de la función
+    }
+
+    p {
+      margin: 0;
+      font-size: 16px;
     }
   }
 }
 
-/* Animaciones para mejor experiencia de usuario */
-.mat-form-field {
-  transition: all 0.3s ease;
+// Estilos responsivos
+@media (max-width: 768px) {
+  .user-management-container {
+    margin: 8px;
 
-  &:hover {
-    .mat-form-field-outline {
-      color: darken($border-color, 10%);
+    .management-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 16px;
+
+      .add-user-button {
+        margin-left: 0;
+        width: 100%;
+        justify-content: center;
+      }
     }
-  }
-}
 
-button {
-  transition: all 0.2s ease;
-
-  &:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  }
-
-  &:active {
-    transform: translateY(0);
+    .users-table {
+      overflow-x: auto;
+      display: block;
+    }
   }
 }
