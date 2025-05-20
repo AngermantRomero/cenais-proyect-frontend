@@ -8,8 +8,9 @@ import { MatCardModule } from '@angular/material/card';
 import { CommonModule } from '@angular/common';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog'; // Añadido MatDialogModule
 import { UserFormComponent } from './components/user-form/user-form.component';
-import { ToastrService } from 'ngx-toastr';
+//import { ToastrService } from 'ngx-toastr';
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-user',
@@ -32,7 +33,8 @@ export class UsersComponent implements OnInit {
   constructor(
     private userService: UserService,
     private dialog: MatDialog,
-    private toastr: ToastrService
+    //private toastr: ToastrService
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -50,7 +52,10 @@ export class UsersComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error al cargar usuarios:', err);
-        this.toastr.error('Error al cargar usuarios', 'Error');
+        //this.toastr.error('Error al cargar usuarios', 'Error');
+        this.snackBar.open('Error al cargar usuarios', 'Cerrar', {
+          duration: 3000
+        });
       }
     });
   }
@@ -85,12 +90,18 @@ export class UsersComponent implements OnInit {
       if (result) {
         this.userService.deleteUser(user.id).subscribe({
           next: () => {
-            this.toastr.success('Usuario eliminado correctamente', 'Éxito');
+            //this.toastr.success('Usuario eliminado correctamente', 'Éxito');
+            this.snackBar.open('Usuario eliminado correctamente', 'Cerrar', {
+        duration: 3000
+      });
             this.loadUsers();
           },
           error: (err) => {
             console.error('Error al eliminar usuario:', err);
-            this.toastr.error('Error al eliminar usuario', 'Error');
+            //this.toastr.error('Error al eliminar usuario', 'Error');
+            this.snackBar.open('Error al eliminar usuario', 'Cerrar', {
+        duration: 3000
+      });
           }
         });
       }
