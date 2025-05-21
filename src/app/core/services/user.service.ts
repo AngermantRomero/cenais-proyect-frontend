@@ -21,7 +21,7 @@ export class UserService {
   getRoles(): Observable<ArrayResponse<Role>> {
     return this.http.get<ArrayResponse<Role>>(this.rolesApiUrl);
   }
-  updateUser(id: number | string, userData: Partial<User>): Observable<SingleResponse<User>> {
+  updateUser(id: string, userData: Partial<User>): Observable<SingleResponse<User>> {
   const url = `${this.apiUrl}/${id}`;
   return this.http.patch<SingleResponse<User>>(url, userData);
 }
