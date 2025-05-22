@@ -1,5 +1,5 @@
 export interface User {
-    id: number;
+    id: string;
     email: string;    
     name: string;
     lastName: string;
@@ -7,6 +7,7 @@ export interface User {
     phone: string;
     role: Role;    
     accessToken?: string;
+    
 }
 
 export interface Role {

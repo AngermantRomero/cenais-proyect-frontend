@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable,throwError } from 'rxjs';
 import { User,Role } from '../interfaces/user.interface'; 
 import { ArrayResponse } from '../interfaces/http.responses.interface';
 import { SingleResponse } from '../interfaces/http.responses.interface';
+import { catchError, map } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
@@ -25,6 +26,15 @@ export class UserService {
   const url = `${this.apiUrl}/${id}`;
   return this.http.patch<SingleResponse<User>>(url, userData);
 }
+ updateUserStatus(id: string, isActive: boolean): Observable<User> {
+    return this.http.patch<SingleResponse<User>>(`${this.apiUrl}/${id}`, { isActive }).pipe(
+      map(response => response.data),
+      catchError(error => {
+        console.error('Error updating status:', error);
+        return throwError(() => new Error(error.message || 'Error al actualizar el estado'));
+      })
+    );
+  }
   deleteUser(id: number | string): Observable<SingleResponse<User>> {
     const url = `${this.apiUrl}/${id}`;
     return this.http.delete<SingleResponse<User>>(url);

@@ -6,11 +6,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { CommonModule } from '@angular/common';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog'; // Añadido MatDialogModule
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { UserFormComponent } from './components/user-form/user-form.component';
-//import { ToastrService } from 'ngx-toastr';
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-user',
@@ -21,19 +22,29 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     MatIconModule,
     MatButtonModule,
     MatCardModule,
-    MatDialogModule, // Añadido aquí
+    MatDialogModule,
+    MatSlideToggleModule
   ],
   templateUrl: './users.component.html',
-  styleUrls: ['./users.component.scss']
+  styleUrls: ['./users.component.scss'],
 })
 export class UsersComponent implements OnInit {
   users: User[] = [];
-  displayedColumns: string[] = ['name', 'lastName', 'isActive', 'email', 'role', 'phone', 'actions'];
+  displayedColumns: string[] = [
+    'name',
+    'lastName',
+    'isActive',
+    'email',
+    'role',
+    'phone',
+    'actions',
+  ];
+    statusLoading: Record<string, boolean> = {};
 
   constructor(
     private userService: UserService,
     private dialog: MatDialog,
-    //private toastr: ToastrService
+
     private snackBar: MatSnackBar
   ) {}
 
@@ -45,6 +56,26 @@ export class UsersComponent implements OnInit {
     return role?.name || 'Sin rol';
   }
 
+  onStatusChange(event: MatSlideToggleChange, user: User): void {
+    const userId = user.id.toString();
+    this.statusLoading[user.id] = true;
+    
+    this.userService.updateUserStatus(userId, event.checked).subscribe({
+      next: (updatedUser) => {
+        user.isActive = updatedUser.isActive;
+        this.snackBar.open('Estado actualizado', 'Cerrar', { duration: 2000 });
+      },
+      error: (err:HttpErrorResponse) => {
+        event.source.checked = !event.checked;
+         user.isActive = !user.isActive;
+          this.snackBar.open(err.error?.message || err.message || 'Error desconocido', 'Cerrar', {
+    duration: 3000
+  });
+      },
+      complete: () => this.statusLoading[user.id] = false
+    });
+  }
+
   loadUsers(): void {
     this.userService.getUsers().subscribe({
       next: (response) => {
@@ -52,18 +83,18 @@ export class UsersComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error al cargar usuarios:', err);
-        //this.toastr.error('Error al cargar usuarios', 'Error');
+
         this.snackBar.open('Error al cargar usuarios', 'Cerrar', {
-          duration: 3000
+          duration: 3000,
         });
-      }
+      },
     });
   }
 
   openUserForm(user?: User): void {
     const dialogRef = this.dialog.open(UserFormComponent, {
       width: '680px',
-      data: { user }
+      data: { user },
     });
 
     dialogRef.afterClosed().subscribe((result: boolean) => {
@@ -82,18 +113,17 @@ export class UsersComponent implements OnInit {
       width: '350px',
       data: {
         title: 'Confirmar eliminación',
-        message: `¿Estás seguro de que quieres eliminar a ${user.name} ${user.lastName}?`
-      }
+        message: `¿Estás seguro de que quieres eliminar a ${user.name} ${user.lastName}?`,
+      },
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.userService.deleteUser(user.id).subscribe({
           next: () => {
-            //this.toastr.success('Usuario eliminado correctamente', 'Éxito');
             this.snackBar.open('Usuario eliminado correctamente', 'Cerrar', {
-        duration: 3000
-      });
+              duration: 3000,
+            });
             this.loadUsers();
           },
           error: (err) => {
@@ -101,7 +131,7 @@ export class UsersComponent implements OnInit {
             //this.toastr.error('Error al eliminar usuario', 'Error');
             this.snackBar.open('Error al eliminar usuario', 'Cerrar', {
         duration: 3000
-      });
+            });
           }
         });
       }

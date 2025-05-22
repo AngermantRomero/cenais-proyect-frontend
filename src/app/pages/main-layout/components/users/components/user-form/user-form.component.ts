@@ -19,7 +19,8 @@ import { CommonModule } from '@angular/common';
 import { User, Role } from '../../../../../../core/interfaces/user.interface';
 import { UserService } from '../../../../../../core/services/user.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatDialog } from '@angular/material/dialog';
 @Component({
   selector: 'app-user-from',
   standalone: true,
@@ -32,6 +33,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     MatButtonModule,
     MatDialogContent,
     MatDialogActions,
+    MatSlideToggleModule,
   ],
   templateUrl: './user-form.component.html',
   styleUrls: ['./user-form.component.scss'],
@@ -45,7 +47,9 @@ export class UserFormComponent implements OnInit {
     private fb: FormBuilder,
     private userService: UserService,
     private dialogRef: MatDialogRef<UserFormComponent>,
+    private dialog: MatDialog,
     private snackBar: MatSnackBar,
+    
 
     @Inject(MAT_DIALOG_DATA) public data: { user: User }
   ) {
@@ -64,6 +68,7 @@ export class UserFormComponent implements OnInit {
         ],
       ],
       role: ['', Validators.required],
+      isActive:[false,Validators.required]
     });
   }
 
@@ -96,8 +101,8 @@ export class UserFormComponent implements OnInit {
   private patchUserData(): void {
     this.isEditMode = true;
     const phoneValue = this.data.user.phone?.startsWith('+53') 
-    ? this.data.user.phone 
-    : `+53${this.data.user.phone || ''}`;
+    ? this.data.user.phone.slice(3)
+     :this.data.user.phone || '';
     this.userForm.patchValue({
       ...this.data.user,
       role: this.data.user.role?.id,
