@@ -68,7 +68,7 @@ export class UserFormComponent implements OnInit {
         ],
       ],
       role: ['', Validators.required],
-      isActive:[false,Validators.required]
+   
     });
   }
 
