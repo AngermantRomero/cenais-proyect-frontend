@@ -122,6 +122,7 @@ export class UserFormComponent implements OnInit {
       // Ejemplo: convertir a mayúsculas
       name: formData.name.trim().toUpperCase(),
       lastName: formData.lastName.trim().toUpperCase(),
+      phone: formData.phone.startsWith('+53') ? formData.phone : '+53' + formData.phone
     };
   }
 
@@ -153,18 +154,14 @@ export class UserFormComponent implements OnInit {
       );
       return;
     }
-    const formData = {
-    ...this.userForm.value,
-    phone: '+53' + this.userForm.value.phone // Agrega el +53 aquí
-  };
-
+   
     // Deshabilitar el botón de submit durante el envío
     this.isSubmitting = true;
 
-    const userData = this.prepareUserData(this.userForm.value);
+    const formData =this.prepareUserData(this.userForm.value);
     const operation = this.isEditMode
       ? this.userService.updateUser(this.data.user.id.toString(), formData)
-      : this.userService.createUser(userData);
+      : this.userService.createUser(formData);
 
     operation.subscribe({
       next: () => {

@@ -3,6 +3,7 @@ export const environment = {
   apiUrl: 'http://localhost:3000/api' ,
   endpoints:{
     auth: '/auth',       
-    users: '/users'      
+    users: '/users',
+    roles: '/roles'     
   }
 };
