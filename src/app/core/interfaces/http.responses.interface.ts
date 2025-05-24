@@ -5,7 +5,8 @@ export interface SingleResponse<T> {
 }
 
 export interface ArrayResponse<T> {
-    status: number;
-    message: string;
+    status?: number;
+    message?: string;
     data: T[];
+
 }

@@ -52,10 +52,6 @@ export class UsersComponent implements OnInit {
     this.loadUsers();
   }
 
-  getRoleName(role: Role): string {
-    return role?.name || 'Sin rol';
-  }
-
   onStatusChange(event: MatSlideToggleChange, user: User): void {
     const userId = user.id.toString();
     this.statusLoading[user.id] = true;

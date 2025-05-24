@@ -61,7 +61,7 @@
             <th mat-header-cell *matHeaderCellDef>Rol</th>
             <td mat-cell *matCellDef="let user">
               <span class="role-badge" [class.admin-role]="user.role?.name === 'Administrator'">
-                {{getRoleName(user.role)}}
+                {{user.role?.name || 'Sin rol'}}
               </span>
             </td>
           </ng-container>

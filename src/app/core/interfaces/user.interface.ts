@@ -5,7 +5,7 @@ export interface User {
     lastName: string;
     isActive: boolean;
     phone: string;
-    role: Role;    
+    role: Role | null;    
     accessToken?: string;
     
 }
