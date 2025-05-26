@@ -14,9 +14,7 @@ export interface CreateSiteDto {
   locality: string;
   code: string;
   province: string; 
+  id?: string;  
 }
-export interface ApiResponse {
-  lists: Site[];  
-  provinces: Province[];
-}
+
 export interface UpdateSiteDto extends Partial<CreateSiteDto> {}
