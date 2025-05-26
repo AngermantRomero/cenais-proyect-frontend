@@ -1,0 +1,104 @@
+@use '@angular/material' as mat;
+
+// Variables de tema Material
+$mdc-theme-primary: #3f51b5;
+$mdc-theme-error: #f44336;
+$mdc-shape-medium: 4px;
+$mdc-typography-font-family: 'Roboto, sans-serif';
+
+// Contenedor principal
+.mat-mdc-dialog-content {
+  padding: 24px;
+  overflow: visible; // Permite que los dropdowns se muestren fuera del diálogo
+
+  .site-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+}
+
+// Campos de formulario Material
+.mat-mdc-form-field {
+  width: 100%;
+
+  // Input outline
+  .mdc-notched-outline {
+    &__leading,
+    &__notch,
+    &__trailing {
+      border-color: rgba(0, 0, 0, 0.12);
+    }
+  }
+
+  // Input con foco
+  .mdc-text-field--focused {
+    .mdc-notched-outline {
+      &__leading,
+      &__notch,
+      &__trailing {
+        border-color: $mdc-theme-primary;
+        border-width: 2px;
+      }
+    }
+  }
+}
+
+// Selector de provincia
+.mat-mdc-select-panel {
+  max-height: 300px !important; // Ajusta según necesidad
+}
+
+// Mensajes de error
+.mat-mdc-form-field-error {
+  color: $mdc-theme-error;
+  font-size: 12px;
+}
+
+// Acciones del diálogo
+.mat-mdc-dialog-actions {
+  padding: 16px 24px;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+  justify-content: flex-end;
+  gap: 8px;
+
+  .mdc-button {
+    &__label {
+      font-weight: 500;
+    }
+
+    &--raised {
+      &:not(:disabled) {
+        @include mat.elevation(2);
+
+        &:hover {
+          @include mat.elevation(4);
+        }
+      }
+    }
+  }
+}
+
+// Título del diálogo
+.mat-mdc-dialog-title {
+  margin: 0;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  font: {
+    size: 20px;
+    weight: 500;
+  }
+}
+
+// Efectos de hover para opciones
+.mat-mdc-option {
+  &:hover:not(.mdc-list-item--disabled) {
+    background: rgba($mdc-theme-primary, 0.04);
+  }
+}
+
+// Texto de carga
+.mat-mdc-option.disabled {
+  color: rgba(0, 0, 0, 0.38);
+  cursor: default;
+}
