@@ -4,6 +4,8 @@ export const environment = {
   endpoints:{
     auth: '/auth',       
     users: '/users',
-    roles: '/roles'     
+    roles: '/roles',     
+    sites: '/sites',
+    provinces:'/provinces'
   }
 };
