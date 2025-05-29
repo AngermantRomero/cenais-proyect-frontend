@@ -32,9 +32,9 @@
       <!-- Provincia -->
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Provincia</mat-label>
-        <mat-select formControlName="province" required>
+        <mat-select formControlName="province" required [compareWith]="compareProvinces">
           @for (province of data.provinces; track province.id) {
-          <mat-option [value]="province.id">{{ province.name }}</mat-option>
+          <mat-option [value]="province">{{ province.name }}</mat-option>
           }
         </mat-select>
         @if (siteForm.get('province')?.hasError('required')) {
