@@ -1,23 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatDialog } from '@angular/material/dialog';
-import { SitesService } from '../../../../core/services/site.service';
-import { ProvincesService } from '../../../../core/services/province.service';
-import { SiteFormComponent } from './sites-form/sites-form.component';
-import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { SiteService } from '../../../../core/services/site.service';
+import { ProvinceService } from '../../../../core/services/province.service';
 import { Site, Province } from '../../../../core/interfaces/sites.interface';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
 import { CommonModule } from '@angular/common';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatDialogModule } from '@angular/material/dialog';
-import { FormsModule } from '@angular/forms';
-import { forkJoin } from 'rxjs';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { SiteFormComponent } from './sites-form/sites-form.component';
+import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-sites',
@@ -28,107 +22,99 @@ import { forkJoin } from 'rxjs';
     MatIconModule,
     MatButtonModule,
     MatCardModule,
-    MatFormFieldModule,
-    MatProgressBarModule,
-    MatSelectModule,
-    MatInputModule,
-    MatDialogModule,
-    FormsModule
+    MatDialogModule
   ],
   templateUrl: './sites.component.html',
-  styleUrls: ['./sites.component.scss']
+  styleUrls: ['./sites.component.scss'],
 })
 export class SitesComponent implements OnInit {
-  dataSource = new MatTableDataSource<Site>();
-  displayedColumns: string[] = ['code', 'locality', 'province', 'actions'];
+  sites: Site[] = [];
   provinces: Province[] = [];
+  displayedColumns: string[] = ['code', 'locality', 'province', 'actions'];
   isLoading: boolean = false;
-  searchFilter: string = '';
 
   constructor(
-    private sitesService: SitesService,
+    private siteService: SiteService,
+    private provinceService: ProvinceService,
     private dialog: MatDialog,
-    private provincesService: ProvincesService
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
-    this.loadInitialData();
+    this.loadProvinces();
+    this.loadSites();
   }
 
-  loadInitialData(): void {
-  this.isLoading = true;
-  this.sitesService.getSitesWithProvinceNames().subscribe({
-    next: (sites) => {
-      this.dataSource.data = sites;
-      this.isLoading = false;
-      console.log('Datos recibidos:', sites); // Para depuración
-    },
-    error: (error) => {
-      console.error('Error cargando sitios:', error);
-      this.isLoading = false;
-    }
-  });
-      this.provincesService.getProvinces().subscribe(provinces => {
-    this.provinces = provinces;
-  });
-}
+  loadSites(): void {
+    this.isLoading = true;
+    this.siteService.getSites().subscribe({
+      next: (response) => {
+        this.sites = response.data;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error al cargar sitios:', err);
+        this.snackBar.open('Error al cargar sitios', 'Cerrar', {
+          duration: 3000,
+        });
+        this.isLoading = false;
+      },
+    });
+  }
 
-
-  openCreateDialog(): void {
-    const dialogRef = this.dialog.open(SiteFormComponent, {
-      width: '500px',
-      data: { 
-        mode: 'create',
-        provinces: this.provinces 
+  loadProvinces(): void {
+    this.provinceService.getProvinces().subscribe({
+      next: (response) => {
+        this.provinces = response.data;
+      },
+      error: (err) => {
+        console.error('Error al cargar provincias:', err);
       }
     });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) this.loadInitialData();
-    });
   }
 
-  editSite(site: Site): void {
+  openSiteForm(site?: Site): void {
     const dialogRef = this.dialog.open(SiteFormComponent, {
-      width: '500px',
+      width: '600px',
       data: { 
         site,
-        mode: 'edit',
         provinces: this.provinces
-      }
+      },
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) this.loadInitialData();
+    dialogRef.afterClosed().subscribe((result: boolean) => {
+      if (result) {
+        this.loadSites();
+      }
     });
   }
 
-  deleteSite(id: string): void {
+  deleteSite(site: Site): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      data: { 
+      width: '350px',
+      data: {
         title: 'Confirmar eliminación',
-        message: '¿Estás seguro de eliminar este sitio?',
-        confirmText: 'Eliminar'
-      }
+        message: `¿Estás seguro de que quieres eliminar el sitio ${site.code} - ${site.locality}?`,
+      },
     });
 
-    dialogRef.afterClosed().subscribe(confirmed => {
-      if (confirmed) {
-        this.isLoading = true;
-        this.sitesService.deleteSite(id).subscribe({
-          next: () => this.loadInitialData(),
-          error: () => this.isLoading = false
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.siteService.deleteSite(site.id).subscribe({
+          next: () => {
+            this.snackBar.open('Sitio eliminado correctamente', 'Cerrar', {
+              duration: 3000,
+            });
+            this.loadSites();
+          },
+          error: (err) => {
+            console.error('Error al eliminar sitio:', err);
+            this.snackBar.open('Error al eliminar sitio', 'Cerrar', {
+              duration: 3000
+            });
+          }
         });
       }
     });
-  }
-
-  applyFilter(): void {
-    this.dataSource.filter = this.searchFilter.trim().toLowerCase();
-  }
-
-  clearFilter(): void {
-    this.searchFilter = '';
-    this.applyFilter();
   }
 }

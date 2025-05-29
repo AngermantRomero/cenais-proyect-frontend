@@ -1,54 +1,106 @@
-
-import { Component, Inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatDialogRef, MAT_DIALOG_DATA,MatDialogModule } from '@angular/material/dialog';
-import { Site,Province} from '../../../../../core/interfaces/sites.interface';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogRef } from '@angular/material/dialog';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { FormsModule } from '@angular/forms';
-import { ProvincesService } from '../../../../../core/services/province.service';
+import { MatButtonModule } from '@angular/material/button';
+import { CommonModule } from '@angular/common';
+import { Site } from '../../../../../core/interfaces/sites.interface'; 
+import { Province } from '../../../../../core/interfaces/sites.interface';
+import { SiteService } from '../../../../../core/services/site.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
 @Component({
   selector: 'app-site-form',
   standalone: true,
-   imports: [ // Módulos necesarios para el diálogo
+  imports: [
     CommonModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatFormFieldModule,
+    ReactiveFormsModule,
     MatInputModule,
     MatSelectModule,
-    FormsModule,
+    MatButtonModule,
+    MatDialogContent,
+    MatDialogActions
   ],
   templateUrl: './sites-form.component.html',
-  styleUrls: ['./sites-form.component.scss'],
+  styleUrls: ['./sites-form.component.scss']
 })
-export class SiteFormComponent {
-   site: Partial<Site> = {}; // Inicializa vacío
-  provinces: Province[] = []; // Inicializa vacío
+export class SiteFormComponent implements OnInit {
+  siteForm: FormGroup;
+  isEditMode: boolean = false;
+  isSubmitting: boolean = false;
 
-
-   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: { site?: Site }, 
-    private provincesService: ProvincesService,
-    private dialogRef: MatDialogRef<SiteFormComponent> 
+  constructor(
+    private fb: FormBuilder,
+    private siteService: SiteService,
+    private dialogRef: MatDialogRef<SiteFormComponent>,
+    private snackBar: MatSnackBar,
+    @Inject(MAT_DIALOG_DATA) public data: { site?: Site, provinces: Province[] }
   ) {
-    this.site = data?.site || {}; 
+    this.siteForm = this.fb.group({
+      code: ['', [Validators.required, Validators.maxLength(10)]],
+      locality: ['', [Validators.required, Validators.maxLength(100)]],
+      province: ['', Validators.required]
+    });
   }
 
   ngOnInit(): void {
-    this.loadProvinces(); 
+    if (this.data?.site) {
+      this.isEditMode = true;
+      this.siteForm.patchValue({
+        code: this.data.site.code,
+        locality: this.data.site.locality,
+        province: this.data.site.province
+      });
+    }
   }
 
-  loadProvinces(): void {
-    this.provincesService.getProvinces().subscribe(
-      (provinces) => this.provinces = provinces
-    );
-  }
-   onSave(): void {
-    if (this.site.code && this.site.locality && this.site.province) {
-      this.dialogRef.close(this.site); 
+  onSubmit(): void {
+    if (this.siteForm.invalid) {
+      this.markFormAsTouched();
+      this.snackBar.open(
+        'Por favor, completa correctamente todos los campos requeridos',
+        'Cerrar',
+        { duration: 3000 }
+      );
+      return;
     }
+
+    this.isSubmitting = true;
+    const formData = this.siteForm.value;
+
+    const operation = this.isEditMode
+      ? this.siteService.updateSite(this.data.site!.id, formData)
+      : this.siteService.createSite(formData);
+
+    operation.subscribe({
+      next: () => {
+        this.snackBar.open(
+          `Sitio ${this.isEditMode ? 'actualizado' : 'creado'} correctamente`,
+          'Cerrar',
+          { duration: 3000 }
+        );
+        this.dialogRef.close(true);
+      },
+      error: (err) => {
+        console.error('Error:', err);
+        this.isSubmitting = false;
+        this.snackBar.open(
+          `Error al ${this.isEditMode ? 'actualizar' : 'crear'} el sitio`,
+          'Cerrar',
+          { duration: 5000 }
+        );
+      }
+    });
+  }
+
+  private markFormAsTouched(): void {
+    Object.values(this.siteForm.controls).forEach(control => {
+      control.markAsTouched();
+    });
+  }
+
+  onCancel(): void {
+    this.dialogRef.close();
   }
 }

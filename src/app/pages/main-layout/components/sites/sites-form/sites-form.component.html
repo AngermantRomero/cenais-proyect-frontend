@@ -1,72 +1,57 @@
-<h2 mat-dialog-title>
-  {{ site.id ? 'Editar Sitio' : 'Crear Sitio' }}
+<h2 mat-dialog-title class="dialog-title">
+  {{ isEditMode ? 'Editar Sitio' : 'Crear Nuevo Sitio' }}
 </h2>
 
-<mat-dialog-content>
-  <form (ngSubmit)="onSave()" class="site-form">
-    <!-- Campo Código -->
-    <mat-form-field appearance="outline">
-      <mat-label>Código</mat-label>
-      <input 
-        matInput 
-        [(ngModel)]="site.code" 
-        name="code" 
-        required
-        placeholder="Ej: MGV"
-      >
-      @if (!site.code) {
-        <mat-error>El código es obligatorio</mat-error>
-      }
-    </mat-form-field>
-
-    <!-- Campo Localidad -->
-    <mat-form-field appearance="outline">
-      <mat-label>Localidad</mat-label>
-      <input 
-        matInput 
-        [(ngModel)]="site.locality" 
-        name="locality" 
-        required
-        placeholder="Ej: Manicaragua"
-      >
-      @if (!site.locality) {
-        <mat-error>La localidad es obligatoria</mat-error>
-      }
-    </mat-form-field>
-
-    <!-- Selector de Provincia -->
-    <mat-form-field appearance="outline">
-      <mat-label>Provincia</mat-label>
-      <mat-select 
-        [(ngModel)]="site.province" 
-        name="province" 
-        required
-      >
-        @if (provinces.length > 0) {
-          @for (province of provinces; track province.id) {
-            <mat-option [value]="province.id">
-              {{ province.name }}
-            </mat-option>
-          }
-        } @else {
-          <mat-option disabled>Cargando provincias...</mat-option>
+<mat-dialog-content class="dialog-content">
+  <form [formGroup]="siteForm" (ngSubmit)="onSubmit()" class="site-form">
+    <div class="form-grid">
+      <!-- Código -->
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Código</mat-label>
+        <input matInput formControlName="code" required>
+        @if (siteForm.get('code')?.hasError('required')) {
+        <mat-error>Campo obligatorio</mat-error>
         }
-      </mat-select>
-      @if (!site.province) {
-        <mat-error>Selecciona una provincia</mat-error>
-      }
-    </mat-form-field>
+        @if (siteForm.get('code')?.hasError('maxlength')) {
+        <mat-error>Máximo 10 caracteres</mat-error>
+        }
+      </mat-form-field>
+
+      <!-- Localidad -->
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Localidad</mat-label>
+        <input matInput formControlName="locality" required>
+        @if (siteForm.get('locality')?.hasError('required')) {
+        <mat-error>Campo obligatorio</mat-error>
+        }
+        @if (siteForm.get('locality')?.hasError('maxlength')) {
+        <mat-error>Máximo 100 caracteres</mat-error>
+        }
+      </mat-form-field>
+
+      <!-- Provincia -->
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Provincia</mat-label>
+        <mat-select formControlName="province" required>
+          @for (province of data.provinces; track province.id) {
+          <mat-option [value]="province.id">{{ province.name }}</mat-option>
+          }
+        </mat-select>
+        @if (siteForm.get('province')?.hasError('required')) {
+        <mat-error>Seleccione una provincia</mat-error>
+        }
+      </mat-form-field>
+    </div>
   </form>
 </mat-dialog-content>
 
-<mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close>Cancelar</button>
-  <button 
-    mat-raised-button 
-    color="primary" 
-    [disabled]="!site.code || !site.locality || !site.province"
-    (click)="onSave()"
-  >
-    {{ site.id ? 'Actualizar' : 'Guardar' }}
+<mat-dialog-actions align="end" class="dialog-actions">
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button mat-raised-button 
+          color="primary" 
+          type="submit"
+          [disabled]="siteForm.invalid || isSubmitting"
+          (click)="onSubmit()">
+    {{ isEditMode ? 'Actualizar' : 'Crear' }}
   </button>
 </mat-dialog-actions>

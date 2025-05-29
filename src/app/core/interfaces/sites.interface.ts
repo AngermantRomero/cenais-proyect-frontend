@@ -2,7 +2,7 @@ export interface Site {
   id: string;
   locality: string;
   code: string;
-  province: Province;
+  province: Province ;
 }
 
 export interface Province {
@@ -13,7 +13,7 @@ export interface Province {
 export interface CreateSiteDto {
   locality: string;
   code: string;
-  province: string; 
+  province: string | Province; 
   id?: string;  
 }
 
