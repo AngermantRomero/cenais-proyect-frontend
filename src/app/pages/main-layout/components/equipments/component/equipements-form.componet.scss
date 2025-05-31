@@ -1,0 +1,107 @@
+/* Variables de color */
+$primary-color: #3f51b5;
+$gray-200: #eeeeee;
+$gray-500: #9e9e9e;
+$gray-700: #616161;
+$error-color: #f44336;
+
+/* Estructura del diálogo */
+.dialog-header {
+  padding: 16px 24px;
+  margin: 0;
+  border-bottom: 1px solid $gray-200;
+  color: $primary-color;
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+.dialog-content {
+  padding: 20px 24px;
+  overflow: hidden;
+  
+  /* Filas del formulario */
+  .form-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+    
+    &.single-field {
+      max-width: 50%;
+    }
+    
+    /* Campos del formulario */
+    .form-field {
+      flex: 1;
+      min-width: 0;
+      
+      /* Iconos */
+      mat-icon {
+        color: $gray-500;
+      }
+      
+      /* Errores */
+      mat-error {
+        color: $error-color;
+        font-size: 12px;
+      }
+    }
+  }
+}
+
+/* Acciones del diálogo */
+.dialog-actions {
+  padding: 16px 24px;
+  border-top: 1px solid $gray-200;
+  display: flex;
+  justify-content: flex-end;
+  
+  .cancel-btn {
+    margin-right: 8px;
+    color: $gray-700;
+  }
+  
+  button[mat-raised-button] {
+    padding: 0 24px;
+    font-weight: 500;
+    background-color: $primary-color;
+    color: white;
+  }
+}
+
+/* Estilos para selects */
+mat-option {
+  padding: 8px 16px;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+}
+
+/* Contenedor del diálogo */
+.mat-dialog-container {
+  padding: 0 !important;
+  border-radius: 8px !important;
+  overflow: hidden;
+  box-shadow: 0 11px 15px -7px rgba(0,0,0,0.2), 
+              0 24px 38px 3px rgba(0,0,0,0.14), 
+              0 9px 46px 8px rgba(0,0,0,0.12);
+}
+
+/* Estilos responsive */
+@media (max-width: 600px) {
+  .form-row {
+    flex-direction: column;
+    gap: 12px;
+    
+    &.single-field {
+      max-width: 100%;
+    }
+  }
+  
+  .dialog-content {
+    padding: 16px;
+  }
+  
+  .mat-form-field {
+    width: 100%;
+  }
+}
