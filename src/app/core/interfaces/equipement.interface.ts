@@ -19,7 +19,7 @@ export interface EquipmentModel {
   makerBrand: string;
 }
 
-export interface TypeEquipment {
+export interface TypeEquipement {
   id: string;
   description: string;
 }
@@ -34,11 +34,11 @@ export interface Equipment {
   id: string;
   serialNumber: string;
   inventoryNumber: string;
-  startOfOperation: string;
+  startOfOperation?: string;
   maker: Maker;
   model: EquipmentModel;
-  typeEquipment: TypeEquipment;
-  currentState: EquipmentState;
+  typeEquipement: TypeEquipement | null;
+  currentState: EquipmentState | null;
   stateHistory: Array<{
     id: string;
     date: string;

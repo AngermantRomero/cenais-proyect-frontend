@@ -10,7 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { EquipmentService } from '../../../../../core/services/equipement.service';
 import { Equipment } from '../../../../../core/interfaces/equipement.interface';
 import { Maker } from '../../../../../core/interfaces/equipement.interface';
-import { TypeEquipment } from '../../../../../core/interfaces/equipement.interface';
+import { TypeEquipement } from '../../../../../core/interfaces/equipement.interface';
 import { EquipmentModel } from '../../../../../core/interfaces/equipement.interface';
 import { EquipmentState } from '../../../../../core/interfaces/equipement.interface';
 
@@ -35,7 +35,7 @@ export class EquipmentFormComponent implements OnInit {
   isEditMode = false;
   makers: Maker[] = [];
   models: EquipmentModel[] = [];
-  types: TypeEquipment[] = [];
+  types: TypeEquipement[] = [];
   states: EquipmentState[] = [];
 
   constructor(
@@ -79,8 +79,8 @@ export class EquipmentFormComponent implements OnInit {
       startOfOperation: equipment.startOfOperation,
       makerId: equipment.maker.idMaker,
       modelId: equipment.model.id,
-      typeEquipmentId: equipment.typeEquipment.id,
-      currentStateId: equipment.currentState.id
+      typeEquipmentId: equipment.typeEquipement?.id,
+      currentStateId: equipment.currentState?.id
     });
   }
 
