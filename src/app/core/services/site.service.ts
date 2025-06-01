@@ -18,11 +18,20 @@ export class SiteService {
   }
 
   createSite(siteData: Omit<Site, 'id'>): Observable<SingleResponse<Site>> {
-    return this.http.post<SingleResponse<Site>>(this.baseUrl, siteData);
+    const dataToSend = {
+      ...siteData,
+      province: typeof siteData.province === 'string' 
+        ? siteData.province 
+        : siteData.province?.id
+    };
+    return this.http.post<SingleResponse<Site>>(this.baseUrl, dataToSend);
   }
-
-  updateSite(id: string, siteData: Partial<Site>): Observable<SingleResponse<Site>> {
-    return this.http.patch<SingleResponse<Site>>(`${this.baseUrl}/${id}`, siteData);
+updateSite(id: string, siteData: Partial<Site>): Observable<SingleResponse<Site>> {
+    const dataToSend = siteData.province && typeof siteData.province !== 'string'
+      ? { ...siteData, province: siteData.province.id }
+      : siteData;
+    
+    return this.http.patch<SingleResponse<Site>>(`${this.baseUrl}/${id}`, dataToSend);
   }
 
   deleteSite(id: string): Observable<SingleResponse<void>> {
