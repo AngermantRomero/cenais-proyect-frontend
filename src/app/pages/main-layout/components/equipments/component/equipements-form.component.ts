@@ -2,7 +2,7 @@ import { Component, Inject, OnInit, Optional } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatInputModule } from '@angular/material/input';
+import { MatFormField, MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -13,6 +13,7 @@ import { Maker } from '../../../../../core/interfaces/equipement.interface';
 import { TypeEquipement } from '../../../../../core/interfaces/equipement.interface';
 import { EquipmentModel } from '../../../../../core/interfaces/equipement.interface';
 import { EquipmentState } from '../../../../../core/interfaces/equipement.interface';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
   standalone: true,
@@ -24,7 +25,8 @@ import { EquipmentState } from '../../../../../core/interfaces/equipement.interf
     MatSelectModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatButtonModule
+    MatButtonModule,
+    MatFormFieldModule,
   ],
   selector: 'app-equipment-form',
   templateUrl: './equipements-form.component.html',
@@ -50,7 +52,7 @@ export class EquipmentFormComponent implements OnInit {
       startOfOperation: ['', Validators.required],
       makerId: ['', Validators.required],
       modelId: ['', Validators.required],
-      typeEquipmentId: ['', Validators.required],
+      typeEquipementId: ['', Validators.required],
       currentStateId: ['', Validators.required]
     });
   }
@@ -79,7 +81,7 @@ export class EquipmentFormComponent implements OnInit {
       startOfOperation: equipment.startOfOperation,
       makerId: equipment.maker.idMaker,
       modelId: equipment.model.id,
-      typeEquipmentId: equipment.typeEquipement?.id,
+      typeEquipementId: equipment.typeEquipement?.id,
       currentStateId: equipment.currentState?.id
     });
   }
@@ -87,12 +89,17 @@ export class EquipmentFormComponent implements OnInit {
   onSubmit(): void {
     if (this.equipmentForm.valid) {
       const formData = this.equipmentForm.value;
+      const originalDate = new Date(formData.startOfOperation);
+      const formattedDate = originalDate.toISOString().split('T')[0]; // 'YYYY-MM-DD'
+      formData.startOfOperation = formattedDate;
       
       if (this.isEditMode) {
         this.equipmentService.updateEquipment(this.data.equipment.id, formData)
           .subscribe(() => this.dialogRef.close(true));
-      } else {
-        this.equipmentService.createEquipment(formData)
+      } else {  
+        const {currentStateId, ...rest} = formData; 
+        const formDataTransformed = { ...rest, initialStateId: currentStateId }; 
+        this.equipmentService.createEquipment(formDataTransformed)
           .subscribe(() => this.dialogRef.close(true));
       }
     }

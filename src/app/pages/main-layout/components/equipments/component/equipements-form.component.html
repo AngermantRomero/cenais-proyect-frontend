@@ -69,12 +69,12 @@
     <div class="form-row">
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Tipo de Equipo*</mat-label>
-        <mat-select formControlName="typeEquipmentId" required>
+        <mat-select formControlName="typeEquipementId" required>
           @for (type of types; track type.id) {
             <mat-option [value]="type.id">{{type.description}}</mat-option>
           }
         </mat-select>
-        @if (equipmentForm.get('typeEquipmentId')?.invalid) {
+        @if (equipmentForm.get('typeEquipementId')?.invalid) {
           <mat-error>Selección requerida</mat-error>
         }
       </mat-form-field>
