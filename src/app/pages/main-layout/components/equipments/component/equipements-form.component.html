@@ -1,0 +1,104 @@
+<h2 mat-dialog-title class="dialog-header">
+  {{ isEditMode ? 'Editar Equipo' : 'Nuevo Equipo' }}
+</h2>
+
+<mat-dialog-content class="dialog-content">
+  <form [formGroup]="equipmentForm" (ngSubmit)="onSubmit()">
+    <!-- Primera fila -->
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Número de Serie*</mat-label>
+        <input matInput formControlName="serialNumber" required>
+        @if (equipmentForm.get('serialNumber')?.invalid) {
+          <mat-error>Campo requerido</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Número de Inventario*</mat-label>
+        <input matInput formControlName="inventoryNumber" required>
+        @if (equipmentForm.get('inventoryNumber')?.invalid) {
+          <mat-error>Campo requerido</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <!-- Fecha de Operación -->
+    <div class="form-row single-field">
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Fecha de Operación*</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="startOfOperation" required>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+        @if (equipmentForm.get('startOfOperation')?.invalid) {
+          <mat-error>Campo requerido</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <!-- Fabricante y Modelo -->
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Fabricante*</mat-label>
+        <mat-select formControlName="makerId" required>
+          @for (maker of makers; track maker.idMaker) {
+            <mat-option [value]="maker.idMaker">
+              {{maker.brand}} @if (maker.country.name) {({{maker.country.name}})}
+            </mat-option>
+          }
+        </mat-select>
+        @if (equipmentForm.get('makerId')?.invalid) {
+          <mat-error>Selección requerida</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Modelo*</mat-label>
+        <mat-select formControlName="modelId" required>
+          @for (model of models; track model.id) {
+            <mat-option [value]="model.id">{{model.modelName}}</mat-option>
+          }
+        </mat-select>
+        @if (equipmentForm.get('modelId')?.invalid) {
+          <mat-error>Selección requerida</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <!-- Tipo y Estado -->
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Tipo de Equipo*</mat-label>
+        <mat-select formControlName="typeEquipementId" required>
+          @for (type of types; track type.id) {
+            <mat-option [value]="type.id">{{type.description}}</mat-option>
+          }
+        </mat-select>
+        @if (equipmentForm.get('typeEquipementId')?.invalid) {
+          <mat-error>Selección requerida</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Estado Actual*</mat-label>
+        <mat-select formControlName="currentStateId" required>
+          @for (state of states; track state.id) {
+            <mat-option [value]="state.id">
+              <span [style.color]="state.color">{{state.name}}</span>
+            </mat-option>
+          }
+        </mat-select>
+        @if (equipmentForm.get('currentStateId')?.invalid) {
+          <mat-error>Selección requerida</mat-error>
+        }
+      </mat-form-field>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="dialog-actions">
+  <button mat-button class="cancel-btn" (click)="onCancel()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="equipmentForm.invalid">
+    {{ isEditMode ? 'Actualizar' : 'Guardar' }}
+  </button>
+</mat-dialog-actions>

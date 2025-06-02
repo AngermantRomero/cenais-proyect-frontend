@@ -6,6 +6,12 @@ export const environment = {
     users: '/users',
     roles: '/roles',     
     sites: '/sites',
-    provinces:'/provinces'
+    provinces:'/provinces',
+    equipments:'/equipments',
+    makers:'/makers',
+    types:'/type-equipement',
+    models:'/models',
+    states:'/type-states'
+
   }
 };

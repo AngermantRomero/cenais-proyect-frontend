@@ -1,1 +1,106 @@
-<p>equipments works!</p>
+<div class="equipment-container">
+  <div class="header-section">
+    <h1>Listado de Equipos</h1>
+    <button mat-raised-button color="primary" (click)="openCreateDialog()">
+      <mat-icon>add</mat-icon>
+      Crear Equipo
+    </button>
+  </div>
+
+  <mat-card class="table-card">
+    @if (isLoading) {
+      <div class="loading-spinner">
+        <mat-spinner diameter="50"></mat-spinner>
+      </div>
+    } @else {
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <!-- N° Serie -->
+        <ng-container matColumnDef="serialNumber">
+          <th mat-header-cell *matHeaderCellDef>N° Serie</th>
+          <td mat-cell *matCellDef="let element">{{element.serialNumber || '-'}}</td>
+        </ng-container>
+
+        <!-- N° Inventario -->
+        <ng-container matColumnDef="inventoryNumber">
+          <th mat-header-cell *matHeaderCellDef>N° Inventario</th>
+          <td mat-cell *matCellDef="let element">{{element.inventoryNumber || '-'}}</td>
+        </ng-container>
+
+        <!-- Tipo -->
+        <ng-container matColumnDef="type">
+          <th mat-header-cell *matHeaderCellDef>Tipo</th>
+          <td mat-cell *matCellDef="let element">
+            @if (element.typeEquipement?.description) {
+              {{element.typeEquipement.description}}
+            } @else {
+              <span class="no-data">-</span>
+            }
+          </td>
+        </ng-container>
+
+        <!-- Fabricante -->
+        <ng-container matColumnDef="maker">
+          <th mat-header-cell *matHeaderCellDef>Fabricante</th>
+          <td mat-cell *matCellDef="let element">
+            @if (element.maker?.brand) {
+              {{element.maker.brand}}
+              @if (element.maker?.country?.name) {
+                ({{element.maker.country.name}})
+              }
+            } @else {
+              <span class="no-data">-</span>
+            }
+          </td>
+        </ng-container>
+
+        <!-- Modelo -->
+        <ng-container matColumnDef="model">
+          <th mat-header-cell *matHeaderCellDef>Modelo</th>
+          <td mat-cell *matCellDef="let element">
+            @if (element.model?.modelName) {
+              {{element.model.modelName}}
+            } @else {
+              <span class="no-data">-</span>
+            }
+          </td>
+        </ng-container>
+
+        <!-- Estado -->
+        <ng-container matColumnDef="state">
+          <th mat-header-cell *matHeaderCellDef>Estado</th>
+          <td mat-cell *matCellDef="let element">
+            @if (element.currentState) {
+              <span [style.color]="element.currentState.color || '#333'">
+                {{element.currentState.name}}
+              </span>
+            } @else {
+              <span class="no-data">-</span>
+            }
+          </td>
+        </ng-container>
+
+        <!-- Acciones -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Acciones</th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-icon-button color="primary" (click)="openEditDialog(element)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="deleteEquipment(element.id)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+      @if (dataSource.data.length === 0 && !isLoading) {
+        <div class="no-results">
+          No se encontraron equipos
+        </div>
+      }
+    }
+  </mat-card>
+</div>
