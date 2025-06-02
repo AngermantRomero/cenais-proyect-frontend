@@ -13,27 +13,28 @@ import { ArrayResponse, SingleResponse } from '../interfaces/http.responses.inte
   providedIn: 'root'
 })
 export class EquipmentService {
-  private readonly baseUrl = `${environment.apiUrl}${environment.endpoints.equipments}`;
-
+ private readonly BaseUrl = environment.apiUrl;
+  private readonly endpoints = environment.endpoints;
+  
   constructor(private http: HttpClient) { }
 
 getEquipments(): Observable<ArrayResponse<Equipment>> {  
-  return this.http.get<ArrayResponse<Equipment>>(this.baseUrl);  
+  return this.http.get<ArrayResponse<Equipment>>( `${this.BaseUrl}${this.endpoints.equipments}`);  
 }
 
   getEquipment(id: string): Observable<SingleResponse<Equipment>> {
-    return this.http.get<SingleResponse<Equipment>>(`${this.baseUrl}/${id}`);
+    return this.http.get<SingleResponse<Equipment>>(`${this.BaseUrl}${this.endpoints.equipments}/${id}`);
   }
   getMakers(): Observable<Maker[]> {
     return this.http.get<ArrayResponse<Maker>>(
-      `${this.baseUrl}${environment.endpoints.makers}`
+      `${this.BaseUrl}${environment.endpoints.makers}`
     ).pipe(
       map(response => response.data)
     );
   }
 getModels(): Observable<EquipmentModel[]> {
     return this.http.get<ArrayResponse<EquipmentModel>>(
-      `${this.baseUrl}${environment.endpoints.models}`
+      `${this.BaseUrl}${environment.endpoints.models}`
     ).pipe(
       map(response => response.data)
     );
@@ -41,7 +42,7 @@ getModels(): Observable<EquipmentModel[]> {
 
 getEquipmentTypes(): Observable<TypeEquipement[]> {
     return this.http.get<ArrayResponse<TypeEquipement>>(
-      `${this.baseUrl}${environment.endpoints.types}`
+      `${this.BaseUrl}${environment.endpoints.types}`
     ).pipe(
       map(response => response.data)
     );
@@ -49,25 +50,25 @@ getEquipmentTypes(): Observable<TypeEquipement[]> {
 
 getEquipmentStates(): Observable<EquipmentState[]> {
     return this.http.get<ArrayResponse<EquipmentState>>(
-      `${this.baseUrl}${environment.endpoints.states}`
+      `${this.BaseUrl}${environment.endpoints.states}`
     ).pipe(
       map(response => response.data)
     );
   }
 
 
-   createEquipment(equipment: Equipment): Observable<Equipment> {
+   createEquipment(EquipmentData: Omit<Equipment, 'id'>): Observable<Equipment> {
     return this.http.post<SingleResponse<Equipment>>(
-      `${this.baseUrl}${environment.endpoints.equipments}`,
-      equipment
+      `${this.BaseUrl}${environment.endpoints.equipments}`,
+      EquipmentData
     ).pipe(
       map(response => response.data)
     );
   }
-  updateEquipment(id: string, equipment: Equipment): Observable<Equipment> {
+  updateEquipment(id: string,EquipmentData:Partial<Equipment>  ): Observable<Equipment> {
     return this.http.put<SingleResponse<Equipment>>(
-      `${this.baseUrl}${environment.endpoints.equipments}/${id}`,
-      equipment
+      `${this.BaseUrl}${environment.endpoints.equipments}/${id}`,
+      EquipmentData
     ).pipe(
       map(response => response.data)
     );
@@ -75,7 +76,7 @@ getEquipmentStates(): Observable<EquipmentState[]> {
 
  deleteEquipment(id: string): Observable<void> {
     return this.http.delete<SingleResponse<void>>(
-      `${this.baseUrl}${environment.endpoints.equipments}/${id}`
+      `${this.BaseUrl}${environment.endpoints.equipments}/${id}`
     ).pipe(
       map(() => {}) 
     );
