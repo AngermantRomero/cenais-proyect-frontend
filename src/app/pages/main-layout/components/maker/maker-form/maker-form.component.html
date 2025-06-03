@@ -10,9 +10,22 @@
         <mat-label>Marca</mat-label>
         <input matInput formControlName="brand">
         @if (makerForm.get('brand')?.hasError('maxlength')) {
-        <mat-error>Máximo 45 caracteres</mat-error>
+        <mat-error>Marca Requerida</mat-error>
         }
       </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+        <mat-label>País</mat-label>
+        <mat-select formControlName="country" required [compareWith]="compareCountries">
+          @for (country of data.countries; track country.id) {
+          <mat-option [value]="country">{{ country.name }}</mat-option>
+          }
+        </mat-select>
+        @if (makerForm.get('country')?.hasError('required')) {
+        <mat-error>Seleccione un país</mat-error>
+        }
+      </mat-form-field>
+
 
       <!-- Descripción -->
       <mat-form-field appearance="outline" class="form-field">
@@ -24,17 +37,7 @@
       </mat-form-field>
 
       <!-- País -->
-      <mat-form-field appearance="outline" class="form-field">
-        <mat-label>País</mat-label>
-        <mat-select formControlName="country" required [compareWith]="compareCountries">
-          @for (country of data.countries; track country.id) {
-          <mat-option [value]="country">{{ country.name }}</mat-option>
-          }
-        </mat-select>
-        @if (makerForm.get('country')?.hasError('required')) {
-        <mat-error>Seleccione un país</mat-error>
-        }
-      </mat-form-field>
+    
     </div>
   </form>
 </mat-dialog-content>

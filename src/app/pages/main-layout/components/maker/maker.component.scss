@@ -1,142 +1,85 @@
-.sites-management-container {
-  margin: 16px;
-  border-radius: 8px;
-  overflow: hidden;
-  background: white;
+/* Estilos para el contenedor principal */
+.makers-management-container {
+  margin: 20px;
+}
 
-  .management-header {
+/* Estilos para el encabezado */
+.management-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding-bottom: 16px;
+  
+  /* Esto asegura que el título y subtítulo se agrupen a la izquierda */
+  .header-text {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 24px;
-    background-color: #fafafa;
-    border-bottom: 1px solid #e0e0e0;
-
-    .management-title {
-      font-size: 20px;
-      font-weight: 500;
-      margin-right: 16px;
-      color: #212121;
-    }
-
-    .management-subtitle {
-      color: #757575;
-      font-size: 14px;
-    }
-
-    .add-button {
-      margin-left: auto;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-
-      mat-icon {
-        font-size: 20px;
-        height: 20px;
-        width: 20px;
-      }
-    }
-  }
-
-  .sites-table {
-    width: 100%;
-    margin-top: 8px;
-
-    th.mat-header-cell {
-      font-weight: 500;
-      font-size: 14px;
-      color: #212121;
-      padding: 12px 16px;
-      border-bottom: 1px solid #e0e0e0;
-    }
-
-    td.mat-cell {
-      padding: 12px 16px;
-      vertical-align: middle;
-      border-bottom: 1px solid #f5f5f5;
-    }
-
-    .actions-column {
-      width: 120px;
-      text-align: center;
-    }
-
-    .actions-cell {
-      padding: 0 16px !important;
-    }
-
-    .actions-container {
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-
-      button.mat-icon-button {
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: background-color 0.2s;
-
-        &:hover {
-          background-color: rgba(0, 0, 0, 0.04);
-        }
-
-        mat-icon {
-          font-size: 20px;
-        }
-      }
-    }
-
-    tr.mat-row {
-      transition: background-color 0.2s ease;
-
-      &:hover {
-        background-color: rgba(0, 0, 0, 0.04);
-      }
-    }
-  }
-
-  .no-sites-message {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    padding: 24px;
-    color: #757575;
-
-    mat-icon {
-      color: #3f51b5;
-    }
-
-    p {
-      margin: 0;
-      font-size: 16px;
-    }
+    flex-direction: column;
   }
 }
 
-@media (max-width: 768px) {
-  .sites-management-container {
-    margin: 8px;
+.management-title {
+  font-size: 24px;
+  font-weight: 500;
+  margin: 0;
+}
 
-    .management-header {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 12px;
-      padding: 12px 16px;
+.management-subtitle {
+  margin: 0;
+}
 
-      .add-button {
-        margin-left: 0;
-        width: 100%;
-        justify-content: center;
-      }
-    }
+/* Estilo para el botón - ahora usa margin-left: auto para empujarlo a la derecha */
+.add-button {
+  margin-left: auto; /* Esto es clave para alinear a la derecha */
+   margin-right: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 
-    .sites-table {
-      overflow-x: auto;
-      display: block;
-    }
+/* Estilos para la tabla */
+.makers-table {
+  width: 100%;
+}
+
+.actions-column {
+  width: 120px;
+}
+
+.actions-cell {
+  padding: 0 !important;
+}
+
+.actions-container {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* Estilos para mensajes */
+.no-makers-message, .loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: rgba(0, 0, 0, 0.6);
+
+  mat-icon {
+    font-size: 48px;
+    height: 48px;
+    width: 48px;
+    margin-bottom: 16px;
+  }
+
+  p {
+    margin: 0;
+    font-size: 16px;
+  }
+}
+
+.loading-spinner {
+  mat-spinner {
+    margin: 0 auto;
   }
 }
