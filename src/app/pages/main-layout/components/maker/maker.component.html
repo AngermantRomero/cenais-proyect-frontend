@@ -1,3 +1,4 @@
+<div class="header-container"></div>
 <div class="mat-elevation-z8 makers-management-container">
   <mat-card>
     <mat-card-header class="management-header">
@@ -36,7 +37,7 @@
           <ng-container matColumnDef="country">
             <th mat-header-cell *matHeaderCellDef>País</th>
             <td mat-cell *matCellDef="let maker">
-              {{ maker.country?.name || 'No asignado' }}
+              {{ maker.country?.countryName || 'No asignado' }}
             </td>
           </ng-container>
 

@@ -18,7 +18,7 @@
         <mat-label>País</mat-label>
         <mat-select formControlName="country" required [compareWith]="compareCountries">
           @for (country of data.countries; track country.id) {
-          <mat-option [value]="country">{{ country.name }}</mat-option>
+          <mat-option [value]="country">{{ country.countryName }}</mat-option>
           }
         </mat-select>
         @if (makerForm.get('country')?.hasError('required')) {

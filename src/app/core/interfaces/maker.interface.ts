@@ -3,7 +3,7 @@ import { Model } from "./model.interface";
 
 export interface Country {
   id: string;
-  name: string;
+  countryName: string;
 }
 
 
