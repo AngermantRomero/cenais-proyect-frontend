@@ -84,33 +84,34 @@ export class MakerFormComponent implements OnInit {
     return typeof country === 'string' ? country : country.id;
   }
 
-  onSubmit(): void {
-    if (this.makerForm.invalid) return;
-
-    this.isSubmitting = true;
-    const formData = this.prepareFormData();
-
-    const operation = this.isEditMode
-      ? this.makerService.updateMaker(
-          this.data.maker!.idMaker,
-          formData as UpdateMakerDto
-        )
-      : this.makerService.createMaker(formData as CreateMakerDto);
-
-    operation.subscribe({
-      next: () => this.handleSuccess(),
-      error: (err) => this.handleError(err),
-    });
+onSubmit(): void {
+  if (this.makerForm.invalid || this.isSubmitting) {
+    return;
   }
+
+  this.isSubmitting = true;
+
+  const formData = this.prepareFormData();
+  const request$ = this.isEditMode && this.data.maker?.idMaker
+    ? this.makerService.updateMaker(this.data.maker.idMaker, formData as UpdateMakerDto)
+    : this.makerService.createMaker(formData as CreateMakerDto);
+
+  request$.subscribe({
+    next: () => this.handleSuccess(),
+    error: (err) => this.handleError(err)
+  });
+}
 
   private prepareFormData(): CreateMakerDto | UpdateMakerDto {
     const formValue = this.makerForm.value;
-    const countryId = this.getCountryId(formValue.country);
+   const countryId = typeof formValue.country === 'object' 
+    ? formValue.country.id 
+    : formValue.country;
 
     const baseData = {
-      brand: formValue.brand || undefined,
+      brand: formValue.brand,
       description: formValue.description || undefined,
-      country: countryId ?? '',
+      country: countryId ,
     };
 
     if (this.isEditMode && this.data.maker?.idMaker) {

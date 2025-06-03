@@ -12,8 +12,8 @@ export interface Maker {
   brand?: string; // Marca (puede ser opcional)
   description?: string; // Descripción del fabricante
   country: Country; // País asociado
-  models: Model[]; // Modelos asociados
-  equipment: Equipment[]; // Equipos relacionados
+  models?: Model[]; // Modelos asociados
+  equipment?: Equipment[]; // Equipos relacionados
 }
 export interface CreateMakerDto {
   locality: string;
@@ -24,7 +24,7 @@ export interface CreateMakerDto {
 export interface CreateMakerDto {
   brand: string;
   description?: string;
-  country: string | Country; 
+  country: string; 
 }
 export interface UpdateMakerDto extends Partial<CreateMakerDto> {
   idMaker: string; 
