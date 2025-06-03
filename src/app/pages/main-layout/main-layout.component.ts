@@ -5,7 +5,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
-
+import { AuthService } from '../../core/services/auth.service';
 @Component({
   selector: 'app-main-layout',  
   templateUrl: './main-layout.component.html',
@@ -22,6 +22,8 @@ import { MatDividerModule } from '@angular/material/divider';
   ],
 })
 export class MainLayoutComponent {
+  authService = inject(AuthService);
+
 menuItems = [
     { id: 1, label: 'Dashboard', icon: 'dashboard', path: 'dashboard' },
     { id: 2, label: 'Usuarios', icon: 'group', path: 'users' },
@@ -32,7 +34,6 @@ menuItems = [
   private router= inject(Router)
 
   logout() {
-    // lógica de logout (ej: AuthService.logout())
-    this.router.navigate(['/login']);
+    this.authService.logout();
   }
 }
