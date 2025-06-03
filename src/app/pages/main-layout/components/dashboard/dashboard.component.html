@@ -1,1 +1,20 @@
-<p>dashboard works!</p>
+<div class="dashboard-container">
+    <h2>Dashboard</h2>
+
+    <mat-grid-list cols="5" rowHeight="100px" gutterSize="16px">
+        <mat-grid-tile><app-kpi-card title="Disponibilidad Tecnica" value="88.35%" /></mat-grid-tile>
+        <mat-grid-tile><app-kpi-card title="Total de Equipos de Repuestos" value="16" /></mat-grid-tile>
+        <mat-grid-tile><app-kpi-card title="Digitalizadores de Repuesto" value="5" /></mat-grid-tile>
+        <mat-grid-tile><app-kpi-card title="Sismometros de Repuesto" value="3" /></mat-grid-tile>
+        <mat-grid-tile><app-kpi-card title="Acelerografos de Repuesto" value="8" /></mat-grid-tile>
+    </mat-grid-list>
+
+    <mat-card class="mt-4 graphs-card">
+        <mat-grid-list cols="2" rowHeight="300px" gutterSize="16px" class="mt-4">
+        <mat-grid-tile><app-line-chart /></mat-grid-tile>
+        <mat-grid-tile><app-bar-chart /></mat-grid-tile>
+        <mat-grid-tile><app-pie-chart /></mat-grid-tile>
+        <mat-grid-tile><app-radar-chart /></mat-grid-tile>
+    </mat-grid-list>
+    </mat-card>
+</div>
