@@ -1,0 +1,153 @@
+/* Estilos del diálogo */
+.dialog-title {
+  padding: 24px 24px 16px;
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #3f51b5;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.dialog-content {
+  padding: 16px 24px;
+  margin-top: 16px;
+}
+
+/* Formulario */
+.maker-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-width: 400px;
+  
+  @media (min-width: 600px) {
+    min-width: 500px;
+  }
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  
+  @media (min-width: 600px) {
+    grid-template-columns: repeat(2, 1fr);
+    
+    .full-width-field {
+      grid-column: span 2;
+    }
+  }
+}
+
+/* Campos de formulario */
+.form-field {
+  width: 100%;
+  margin-bottom: 8px;
+  
+  &-brand {
+    margin-bottom: 16px;
+  }
+
+  .mat-form-field-wrapper {
+    padding-bottom: 0.5em;
+  }
+  
+  .mat-form-field-outline {
+    background-color: #f5f5f5;
+    border-radius: 4px;
+  }
+}
+
+/* Selector de países */
+.country-select {
+  .mat-select-arrow-wrapper {
+    transform: translateY(0) !important;
+  }
+  
+  .mat-select-value {
+    display: flex;
+    align-items: center;
+  }
+}
+
+/* Estados de los campos */
+.mat-form-field-appearance-outline {
+  &.mat-focused {
+    .mat-form-field-label {
+      color: #3f51b5;
+      font-weight: 500;
+    }
+    
+    .mat-form-field-outline-thick {
+      color: #3f51b5;
+    }
+  }
+  
+  &.mat-form-field-invalid {
+    .mat-form-field-outline {
+      color: #f44336;
+    }
+    
+    .required-hint {
+      color: #f44336;
+    }
+  }
+}
+
+/* Hint y mensajes */
+.required-hint {
+  font-size: 12px;
+  color: #666;
+  margin-top: 4px;
+}
+
+/* Textarea para descripción */
+.description-textarea {
+  .mat-form-field-flex {
+    align-items: flex-start;
+  }
+  
+  textarea {
+    min-height: 80px;
+    resize: vertical;
+  }
+}
+
+/* Acciones del diálogo */
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px 24px;
+  border-top: 1px solid #e0e0e0;
+  margin-top: 16px;
+  gap: 8px;
+  
+  button {
+    padding: 0 16px;
+    min-width: 80px;
+    
+    &[color="primary"] {
+      font-weight: 500;
+    }
+  }
+}
+
+/* Transiciones */
+.mat-form-field {
+  transition: all 0.3s ease;
+}
+
+/* Spinner de carga */
+.form-loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  border-radius: 4px;
+}

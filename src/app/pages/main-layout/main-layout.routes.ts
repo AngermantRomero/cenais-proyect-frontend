@@ -30,7 +30,8 @@ export const mainLayoutRoutes: Routes = [
       {
       path: 'sites',
       component: SitesComponent
-      },   
+      }, 
+        
     ]
   }
 ];

@@ -1,0 +1,78 @@
+<div class="mat-elevation-z8 makers-management-container">
+  <mat-card>
+    <mat-card-header class="management-header">
+      <mat-card-title class="management-title">Gestión de Fabricantes</mat-card-title>
+      <mat-card-subtitle class="management-subtitle">Total: {{makers.length}} fabricantes</mat-card-subtitle>
+      
+      <button mat-raised-button 
+              color="primary" 
+              class="add-button"
+              (click)="openMakerForm()">
+        <mat-icon>add</mat-icon>
+        Nuevo Fabricante
+      </button>
+    </mat-card-header>
+
+    <mat-card-content>
+      @if (isLoading) {
+        <div class="loading-spinner">
+          <mat-spinner diameter="50"></mat-spinner>
+        </div>
+      } @else if (makers.length > 0) {
+        <table mat-table [dataSource]="makers" class="makers-table">
+          <!-- Columna Marca -->
+          <ng-container matColumnDef="brand">
+            <th mat-header-cell *matHeaderCellDef>Marca</th>
+            <td mat-cell *matCellDef="let maker">{{maker.brand}}</td>
+          </ng-container>
+
+          <!-- Columna Descripción -->
+          <ng-container matColumnDef="description">
+            <th mat-header-cell *matHeaderCellDef>Descripción</th>
+            <td mat-cell *matCellDef="let maker">{{maker.description}}</td>
+          </ng-container>
+
+          <!-- Columna País -->
+          <ng-container matColumnDef="country">
+            <th mat-header-cell *matHeaderCellDef>País</th>
+            <td mat-cell *matCellDef="let maker">
+              {{ maker.country?.name || 'No asignado' }}
+            </td>
+          </ng-container>
+
+          <!-- Columna Acciones -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef class="actions-column">Acciones</th>
+            <td mat-cell *matCellDef="let maker" class="actions-cell">
+              <div class="actions-container">
+                <button mat-icon-button 
+                        color="accent"
+                        matTooltip="Editar fabricante"
+                        aria-label="Editar fabricante"
+                        (click)="openMakerForm(maker)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                
+                <button mat-icon-button 
+                        color="warn"
+                        matTooltip="Eliminar fabricante"
+                        aria-label="Eliminar fabricante"
+                        (click)="deleteMaker(maker)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      } @else {
+        <div class="no-makers-message">
+          <mat-icon>info</mat-icon>
+          <p>No se encontraron fabricantes registrados</p>
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>
