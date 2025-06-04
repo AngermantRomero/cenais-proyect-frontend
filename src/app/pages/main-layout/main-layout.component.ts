@@ -30,6 +30,7 @@ menuItems = [
     { id: 3, label: 'Equipos', icon: 'devices', path: 'equipments' },
     { id: 4, label: 'Sitios', icon: 'place', path: 'sites' },
     { id: 5, label: 'Fabricantes', icon: 'factory', path: 'maker' },
+    { id: 6, label: 'Modelos', icon: 'precision_manufacturing', path: 'model' },
   ];
 
   private router= inject(Router)
