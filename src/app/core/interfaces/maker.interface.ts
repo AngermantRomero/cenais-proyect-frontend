@@ -15,16 +15,12 @@ export interface Maker {
   models?: Model[]; // Modelos asociados
   equipment?: Equipment[]; // Equipos relacionados
 }
-export interface CreateMakerDto {
-  locality: string;
-  code: string;
-  province: string; 
-}
+
 
 export interface CreateMakerDto {
   brand: string;
   description?: string;
-  country: string; 
+  countryName: string;
 }
 export interface UpdateMakerDto extends Partial<CreateMakerDto> {
   idMaker: string; 

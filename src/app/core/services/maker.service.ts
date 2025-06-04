@@ -27,7 +27,14 @@ export class MakerService {
 }
 
  updateMaker(id: string, makerData: UpdateMakerDto): Observable<SingleResponse<Maker>> {
-  return this.http.patch<SingleResponse<Maker>>(`${this.baseUrl}/${id}`, makerData);
+  // Crear un nuevo objeto solo con las propiedades permitidas
+  const updateData = {
+    brand: makerData.brand,
+    description: makerData.description,
+    countryName: makerData.countryName
+  };
+  
+  return this.http.patch<SingleResponse<Maker>>(`${this.baseUrl}/${id}`, updateData);
 }
 
   deleteMaker(id: string): Observable<SingleResponse<void>> {

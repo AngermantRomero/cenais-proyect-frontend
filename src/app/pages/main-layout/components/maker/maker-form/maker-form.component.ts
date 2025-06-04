@@ -104,14 +104,14 @@ onSubmit(): void {
 
   private prepareFormData(): CreateMakerDto | UpdateMakerDto {
     const formValue = this.makerForm.value;
-   const countryId = typeof formValue.country === 'object' 
-    ? formValue.country.id 
-    : formValue.country;
+   const countryName = typeof formValue.country === 'object' 
+    ? formValue.country.countryName
+     : this.data.countries.find(c => c.id === formValue.country)?.countryName || '';
 
     const baseData = {
       brand: formValue.brand,
       description: formValue.description || undefined,
-      country: countryId ,
+      countryName: countryName ,
     };
 
     if (this.isEditMode && this.data.maker?.idMaker) {
