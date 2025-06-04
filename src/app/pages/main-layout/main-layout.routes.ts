@@ -5,6 +5,7 @@ import { MainLayoutComponent } from './main-layout.component';
 import { UsersComponent } from './components/users/users.component';
 import { EquipmentsComponent } from './components/equipments/equipments.component';
 import { SitesComponent } from './components/sites/sites.component';
+import { roleGuard } from '../../core/guards/role.guard';
 import { MakerComponent } from './components/maker/maker.component';
 export const mainLayoutRoutes: Routes = [
   {
@@ -22,6 +23,8 @@ export const mainLayoutRoutes: Routes = [
     },
       {
         path: 'users',
+        canActivate: [roleGuard],
+        data: { roles: ['Administrator'] },
         component: UsersComponent
       },
       {

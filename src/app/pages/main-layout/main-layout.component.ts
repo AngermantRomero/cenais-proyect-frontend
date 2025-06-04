@@ -23,18 +23,22 @@ import { AuthService } from '../../core/services/auth.service';
 })
 export class MainLayoutComponent {
   authService = inject(AuthService);
+  private userRole = this.authService.getUserData()?.role?.name ?? null;
 
 menuItems = [
-    { id: 1, label: 'Dashboard', icon: 'dashboard', path: 'dashboard' },
-    { id: 2, label: 'Usuarios', icon: 'group', path: 'users' },
-    { id: 3, label: 'Equipos', icon: 'devices', path: 'equipments' },
-    { id: 4, label: 'Sitios', icon: 'place', path: 'sites' },
-    { id: 5, label: 'Fabricantes', icon: 'factory', path: 'maker' },
+    { id: 1, label: 'Dashboard', icon: 'dashboard', path: 'dashboard', roles: ['Administrator', 'Technician', 'Guest'], },
+    { id: 2, label: 'Usuarios', icon: 'group', path: 'users',roles: ['Administrator'], },
+    { id: 3, label: 'Equipos', icon: 'devices', path: 'equipments', roles: ['Administrator', 'Technician'], },
+    { id: 4, label: 'Sitios', icon: 'place', path: 'sites', roles: ['Administrator', 'Technician'], },
+    { id: 5, label: 'Fabricantes', icon: 'factory', path: 'maker', roles: ['Administrator' ], },
   ];
 
-  private router= inject(Router)
 
   logout() {
     this.authService.logout();
+  }
+
+  get filteredMenuItems() {
+    return this.menuItems.filter(item => item.roles.includes(this.userRole!));
   }
 }
