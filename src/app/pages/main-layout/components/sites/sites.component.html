@@ -4,13 +4,17 @@
       <mat-card-title class="management-title">Gestión de Sitios</mat-card-title>
       <mat-card-subtitle class="management-subtitle">Total: {{sites.length}} sitios</mat-card-subtitle>
       
-      <button mat-raised-button 
+      @if (isAdmin) {
+        <button mat-raised-button 
               color="primary" 
               class="add-button"
               (click)="openSiteForm()">
-        <mat-icon>add</mat-icon>
-        Nuevo Sitio
-      </button>
+              <mat-icon>add</mat-icon>
+              Nuevo Sitio
+        </button>
+      }
+      
+    
     </mat-card-header>
 
     <mat-card-content>
