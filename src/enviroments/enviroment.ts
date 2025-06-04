@@ -11,7 +11,9 @@ export const environment = {
     makers:'/makers',
     types:'/type-equipement',
     models:'/models',
-    states:'/type-states'
-
+    states:'/type-states',
+    maker:'/makers',
+    model:'/models',
+    country:'/countries'
   }
 };
