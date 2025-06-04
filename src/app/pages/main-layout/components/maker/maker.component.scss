@@ -1,0 +1,85 @@
+/* Estilos para el contenedor principal */
+.makers-management-container {
+  margin: 20px;
+}
+
+/* Estilos para el encabezado */
+.management-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding-bottom: 16px;
+  
+  /* Esto asegura que el título y subtítulo se agrupen a la izquierda */
+  .header-text {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.management-title {
+  font-size: 24px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.management-subtitle {
+  margin: 0;
+}
+
+/* Estilo para el botón - ahora usa margin-left: auto para empujarlo a la derecha */
+.add-button {
+  margin-left: auto; /* Esto es clave para alinear a la derecha */
+   margin-right: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Estilos para la tabla */
+.makers-table {
+  width: 100%;
+}
+
+.actions-column {
+  width: 120px;
+}
+
+.actions-cell {
+  padding: 0 !important;
+}
+
+.actions-container {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* Estilos para mensajes */
+.no-makers-message, .loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: rgba(0, 0, 0, 0.6);
+
+  mat-icon {
+    font-size: 48px;
+    height: 48px;
+    width: 48px;
+    margin-bottom: 16px;
+  }
+
+  p {
+    margin: 0;
+    font-size: 16px;
+  }
+}
+
+.loading-spinner {
+  mat-spinner {
+    margin: 0 auto;
+  }
+}

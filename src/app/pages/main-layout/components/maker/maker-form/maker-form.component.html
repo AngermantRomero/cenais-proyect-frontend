@@ -1,0 +1,60 @@
+<h2 mat-dialog-title class="dialog-title">
+  {{ isEditMode ? 'Editar Fabricante' : 'Crear Nuevo Fabricante' }}
+</h2>
+
+<mat-dialog-content class="dialog-content">
+  <form [formGroup]="makerForm" (ngSubmit)="onSubmit()" class="maker-form">
+    <div class="form-grid">
+      <!-- Marca -->
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Marca</mat-label>
+        <input matInput formControlName="brand">
+        @if (makerForm.get('brand')?.hasError('maxlength')) {
+        <mat-error>Marca Requerida</mat-error>
+        }
+      </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+        <mat-label>País</mat-label>
+        <mat-select formControlName="country" required [compareWith]="compareCountries">
+          @for (country of data.countries; track country.id) {
+          <mat-option [value]="country">{{ country.countryName }}</mat-option>
+          }
+        </mat-select>
+        @if (makerForm.get('country')?.hasError('required')) {
+        <mat-error>Seleccione un país</mat-error>
+        }
+      </mat-form-field>
+
+
+      <!-- Descripción -->
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Descripción</mat-label>
+        <textarea matInput formControlName="description" rows="3"></textarea>
+        @if (makerForm.get('description')?.hasError('maxlength')) {
+        <mat-error>Máximo 255 caracteres</mat-error>
+        }
+      </mat-form-field>
+
+      <!-- País -->
+    
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="dialog-actions">
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button mat-raised-button 
+          color="primary" 
+          type="submit"
+          [disabled]="makerForm.invalid || isSubmitting"
+          (click)="onSubmit()">
+    @if (isSubmitting) {
+      <div class="button-loading">
+        <mat-spinner diameter="20" color="accent"></mat-spinner>
+      </div>
+    } @else {
+      {{ isEditMode ? 'Actualizar' : 'Crear' }}
+    }
+  </button>
+</mat-dialog-actions>

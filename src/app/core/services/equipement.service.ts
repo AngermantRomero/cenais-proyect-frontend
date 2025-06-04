@@ -7,6 +7,7 @@ import { TypeEquipement } from '../interfaces/equipement.interface';
 import { EquipmentModel } from '../interfaces/equipement.interface';
 import { EquipmentState } from '../interfaces/equipement.interface';
 import { environment } from '../../../enviroments/enviroment';
+import { Site } from '../interfaces/sites.interface';
 import { ArrayResponse, SingleResponse } from '../interfaces/http.responses.interface';
 
 @Injectable({
@@ -56,6 +57,38 @@ getEquipmentStates(): Observable<EquipmentState[]> {
     );
   }
 
+   assignToSite(equipmentId: string, siteCode: string): Observable<Equipment> {
+    return this.http.post<SingleResponse<Equipment>>(
+      `${this.BaseUrl}${this.endpoints.equipments}/${equipmentId}/assign-site`,
+      { siteCode }
+    ).pipe(
+      map(response => response.data)
+    );
+  }
+
+  removeFromSite(equipmentId: string): Observable<Equipment> {
+    return this.http.delete<SingleResponse<Equipment>>(
+      `${this.BaseUrl}${this.endpoints.equipments}/${equipmentId}/remove-site`
+    ).pipe(
+      map(response => response.data)
+    );
+  }
+
+  getEquipmentsBySite(siteCode: string): Observable<Equipment[]> {
+    return this.http.get<ArrayResponse<Equipment>>(
+      `${this.BaseUrl}${this.endpoints.equipments}/by-site/${siteCode}?expand=maker,model`
+    ).pipe(
+      map(response => response.data)
+    );
+  }
+   getAvailableSites(): Observable<Site[]> {
+    return this.http.get<ArrayResponse<Site>>(
+      `${this.BaseUrl}${this.endpoints.sites}`
+    ).pipe(
+      map(response => response.data)
+    );
+  }
+
 
    createEquipment(EquipmentData: Omit<Equipment, 'id'>): Observable<Equipment> {
     return this.http.post<SingleResponse<Equipment>>(
@@ -65,8 +98,11 @@ getEquipmentStates(): Observable<EquipmentState[]> {
       map(response => response.data)
     );
   }
+   assignSite(equipmentId: string, siteCode: string): Observable<any> {
+    return this.http.post(`/api/equipments/${equipmentId}/assign-site`, { siteCode });
+  }
   updateEquipment(id: string,EquipmentData:Partial<Equipment>  ): Observable<Equipment> {
-    return this.http.put<SingleResponse<Equipment>>(
+    return this.http.patch<SingleResponse<Equipment>>(
       `${this.BaseUrl}${environment.endpoints.equipments}/${id}`,
       EquipmentData
     ).pipe(

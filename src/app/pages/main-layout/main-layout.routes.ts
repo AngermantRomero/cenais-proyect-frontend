@@ -5,6 +5,7 @@ import { MainLayoutComponent } from './main-layout.component';
 import { UsersComponent } from './components/users/users.component';
 import { EquipmentsComponent } from './components/equipments/equipments.component';
 import { SitesComponent } from './components/sites/sites.component';
+import { MakerComponent } from './components/maker/maker.component';
 export const mainLayoutRoutes: Routes = [
   {
     path: '',
@@ -30,6 +31,10 @@ export const mainLayoutRoutes: Routes = [
       {
       path: 'sites',
       component: SitesComponent
+      }, 
+       {
+      path: 'maker',
+      component: MakerComponent
       },   
     ]
   }
