@@ -71,7 +71,7 @@
         <mat-label>Tipo de Equipo*</mat-label>
         <mat-select formControlName="typeEquipementId" required>
           @for (type of types; track type.id) {
-            <mat-option [value]="type.id">{{type.description}}</mat-option>
+            <mat-option [value]="type.id">{{type.name}}</mat-option>
           }
         </mat-select>
         @if (equipmentForm.get('typeEquipementId')?.invalid) {

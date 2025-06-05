@@ -13,6 +13,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   standalone: true,
@@ -30,25 +31,33 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   styleUrls: ['./equipments.component.scss'],
 })
 export class EquipmentsComponent implements OnInit {
-  displayedColumns: string[] = [
+  isAdmin: boolean = false;
+  columnsBase: string[] = [
     'serialNumber',
     'inventoryNumber',
     'type',
     'maker',
     'model',
     'state',
-    'actions',
   ];
   dataSource = new MatTableDataSource<Equipment>([]);
 
   constructor(
     private equipmentService: EquipmentService,
     private dialog: MatDialog,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
     this.loadEquipment();
+    this.isAdmin = this.authService.getUserData()?.role?.name === 'Administrator';  
+  }
+
+  get displayedColumns(): string[] {
+    return this.isAdmin
+      ? [...this.columnsBase, 'actions']
+      : this.columnsBase;
   }
   openCreateDialog(): void {
     this.dialog

@@ -21,7 +21,7 @@ export interface EquipmentModel {
 
 export interface TypeEquipement {
   id: string;
-  description: string;
+  name: string;
 }
 
 export interface EquipmentState {
