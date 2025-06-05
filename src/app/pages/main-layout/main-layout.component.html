@@ -4,7 +4,7 @@
       <div class="nav-items">
         <h2 class="app-title">Mi App</h2>
         <mat-nav-list>
-          @for (item of menuItems; track item.id) {
+          @for (item of filteredMenuItems; track item.id) {
             <a
               class="nav-link"
               mat-list-item
