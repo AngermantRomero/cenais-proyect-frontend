@@ -31,7 +31,7 @@ menuItems = [
     { id: 3, label: 'Equipos', icon: 'devices', path: 'equipments', roles: ['Administrator', 'Technician'], },
     { id: 4, label: 'Sitios', icon: 'place', path: 'sites', roles: ['Administrator', 'Technician'], },
     { id: 5, label: 'Fabricantes', icon: 'factory', path: 'maker', roles: ['Administrator' ], },
-    { id: 6, label: 'Modelos', icon: 'precision_manufacturing', path: 'model' },
+    { id: 6, label: 'Modelos', icon: 'precision_manufacturing', path: 'model', roles: ['Administrator' ], },
   ];
 
 
