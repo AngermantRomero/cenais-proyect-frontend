@@ -1,0 +1,60 @@
+<h2 mat-dialog-title class="dialog-title">
+  {{ isEditMode ? 'Editar Modelo' : 'Crear Nuevo Modelo' }}
+</h2>
+
+<mat-dialog-content class="dialog-content">
+  <form [formGroup]="modelForm" (ngSubmit)="onSubmit()" class="model-form">
+    <div class="form-grid">
+      <!-- Nombre del Modelo -->
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Nombre del Modelo</mat-label>
+        <input matInput formControlName="modelName">
+        @if (modelForm.get('modelName')?.hasError('required')) {
+          <mat-error>Nombre requerido</mat-error>
+        }
+        @if (modelForm.get('modelName')?.hasError('maxlength')) {
+          <mat-error>Máximo 45 caracteres</mat-error>
+        }
+      </mat-form-field>
+
+      <!-- Fabricante -->
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Fabricante</mat-label>
+        <mat-select formControlName="maker" required [compareWith]="compareMakers">
+          @for (maker of data.makers; track maker.idMaker) {
+            <mat-option [value]="maker">{{ maker.brand }}</mat-option>
+          }
+        </mat-select>
+        @if (modelForm.get('maker')?.hasError('required')) {
+          <mat-error>Seleccione un fabricante</mat-error>
+        }
+      </mat-form-field>
+
+      <!-- Descripción -->
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Descripción</mat-label>
+        <textarea matInput formControlName="description" rows="3"></textarea>
+        @if (modelForm.get('description')?.hasError('maxlength')) {
+          <mat-error>Máximo 255 caracteres</mat-error>
+        }
+      </mat-form-field>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="dialog-actions">
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button mat-raised-button 
+          color="primary" 
+          type="submit"
+          [disabled]="modelForm.invalid || isSubmitting"
+          (click)="onSubmit()">
+    @if (isSubmitting) {
+      <div class="button-loading">
+        <mat-spinner diameter="20" color="accent"></mat-spinner>
+      </div>
+    } @else {
+      {{ isEditMode ? 'Actualizar' : 'Crear' }}
+    }
+  </button>
+</mat-dialog-actions>

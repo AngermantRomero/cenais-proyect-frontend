@@ -7,6 +7,7 @@ import { EquipmentsComponent } from './components/equipments/equipments.componen
 import { SitesComponent } from './components/sites/sites.component';
 import { roleGuard } from '../../core/guards/role.guard';
 import { MakerComponent } from './components/maker/maker.component';
+import { ModelsComponent } from './components/models/models.component';
 export const mainLayoutRoutes: Routes = [
   {
     path: '',
@@ -38,7 +39,11 @@ export const mainLayoutRoutes: Routes = [
        {
       path: 'maker',
       component: MakerComponent
-      },   
+      }, 
+      {
+      path: 'model',
+      component: ModelsComponent
+      },     
     ]
   }
 ];
