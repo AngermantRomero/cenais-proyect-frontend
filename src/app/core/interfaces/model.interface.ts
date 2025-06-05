@@ -5,6 +5,24 @@ export interface Model {
   modelName: string; 
   description?: string; 
   makerId: string; 
+  makerBrand?: string;
   maker: Maker; 
   equipement: Equipment[]; 
+}
+export interface CreateModelDto {
+  modelName: string;
+  description?: string;
+  makerId: string;
+}
+
+export interface UpdateModelDto {
+  modelName?: string;
+  description?: string;
+  makerId?: string;
+}
+
+export interface ModelFiltersDto {
+  modelName?: string;
+  description?: string;
+  makerId?: string;
 }
