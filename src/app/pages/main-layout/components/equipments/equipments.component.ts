@@ -39,6 +39,7 @@ export class EquipmentsComponent implements OnInit {
     'maker',
     'model',
     'state',
+    'location'
   ];
   dataSource = new MatTableDataSource<Equipment>([]);
 
@@ -88,48 +89,46 @@ export class EquipmentsComponent implements OnInit {
   isLoading = false;
 
   loadEquipment(): void {
-    this.isLoading = true;
+  this.isLoading = true;
+  this.equipmentService.getEquipments().subscribe({
+    next: (equipments) => {
+      this.dataSource.data = equipments; 
+      this.isLoading = false;
+    },
+    error: (error) => {
+      this.isLoading = false;
+      this.dataSource.data = [];
+      this.snackBar.open('Error al cargar equipos', 'Cerrar', { duration: 3000 });
+    }
+  });
+}
 
-    this.equipmentService.getEquipments().subscribe({
-      next: (response) => {
-        this.dataSource.data = response.data || [];
-        this.isLoading = false;
-      },
-      error: (error) => {
-        this.isLoading = false;
-        this.dataSource.data = [];
-        this.snackBar.open(
-          error.error?.message || 'Error al cargar equipos',
-          'Cerrar',
-          { duration: 3000 }
-        );
-      },
-    });
-  }
-  async deleteEquipment(equipmentId: string): Promise<void> {
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      data: {
-        title: 'Eliminar equipo',
-        message: '¿Estás seguro de eliminar este equipo permanentemente?',
-      },
-    });
+deleteEquipment(equipmentId: string): void {
+  const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+    data: { 
+      title: 'Eliminar equipo', 
+      message: '¿Estás seguro de eliminar este equipo permanentemente?' 
+    }
+  });
 
-    const result = await dialogRef.afterClosed().toPromise();
-
+  dialogRef.afterClosed().subscribe(result => {
     if (result) {
       this.equipmentService.deleteEquipment(equipmentId).subscribe({
         next: () => {
-          this.snackBar.open('✅ Equipo eliminado', 'Cerrar', {
-            duration: 3000,
+          this.snackBar.open('✅ Equipo eliminado', 'Cerrar', { 
+            duration: 3000 
           });
           this.loadEquipment();
         },
-        error: () => {
-          this.snackBar.open('❌ Error al eliminar', 'Cerrar', {
-            duration: 3000,
+        error: (error) => {
+          console.error('Error al eliminar:', error);
+          this.snackBar.open('❌ Error al eliminar el equipo', 'Cerrar', { 
+            duration: 3000 
           });
-        },
+        }
       });
     }
+  });
   }
-}
+  }
+
