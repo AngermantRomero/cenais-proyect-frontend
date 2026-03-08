@@ -14,6 +14,7 @@ import { TypeEquipement } from '../../../../../core/interfaces/equipement.interf
 import { EquipmentModel } from '../../../../../core/interfaces/equipement.interface';
 import { EquipmentState } from '../../../../../core/interfaces/equipement.interface';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { Site,Province } from '../../../../../core/interfaces/sites.interface';
 
 @Component({
   standalone: true,
@@ -39,6 +40,7 @@ export class EquipmentFormComponent implements OnInit {
   models: EquipmentModel[] = [];
   types: TypeEquipement[] = [];
   states: EquipmentState[] = [];
+  sites: Site[]=[];
 
   constructor(
     private fb: FormBuilder,
@@ -53,9 +55,12 @@ export class EquipmentFormComponent implements OnInit {
       makerId: ['', Validators.required],
       modelId: ['', Validators.required],
       typeEquipementId: ['', Validators.required],
-      currentStateId: ['', Validators.required]
+      initialStateId: ['', Validators.required],
+      siteId:['']
     });
+    
   }
+  
 
   ngOnInit(): void {
     this.loadDropdownData();
@@ -65,6 +70,17 @@ export class EquipmentFormComponent implements OnInit {
       this.patchFormValues(this.data.equipment);
     }
   }
+  getProvinceName(site: Site): string {
+  if (!site?.province) return '';
+  
+  // Verificar si province es un objeto (tiene propiedad 'name')
+  if (typeof site.province === 'object' && 'name' in site.province) {
+    return site.province.name;
+  }
+  
+
+  return '';
+}
 
   loadDropdownData(): void {
     // Estos métodos deberían implementarse en el EquipmentService
@@ -72,6 +88,7 @@ export class EquipmentFormComponent implements OnInit {
     this.equipmentService.getModels().subscribe(models => this.models = models);
     this.equipmentService.getEquipmentTypes().subscribe(types => this.types = types);
     this.equipmentService.getEquipmentStates().subscribe(states => this.states = states);
+    this.equipmentService.getAvailableSites().subscribe(sites => this.sites = sites);
   }
 
   patchFormValues(equipment: Equipment): void {
@@ -82,28 +99,44 @@ export class EquipmentFormComponent implements OnInit {
       makerId: equipment.maker.idMaker,
       modelId: equipment.model.id,
       typeEquipementId: equipment.typeEquipement?.id,
-      currentStateId: equipment.currentState?.id
+       initialStateId: equipment.currentState?.id,
+       siteId: equipment.site?.id || '' 
     });
   }
 
-  onSubmit(): void {
-    if (this.equipmentForm.valid) {
-      const formData = this.equipmentForm.value;
-      const originalDate = new Date(formData.startOfOperation);
-      const formattedDate = originalDate.toISOString().split('T')[0]; // 'YYYY-MM-DD'
-      formData.startOfOperation = formattedDate;
+ onSubmit(): void {
+  if (this.equipmentForm.valid) {
+    const formValue = this.equipmentForm.value;
+    
+    // Formatear fecha
+    const payload = {
+      ...formValue,
+      startOfOperation: new Date(formValue.startOfOperation)
+        .toISOString().split('T')[0]
+    };
+
+    if (this.isEditMode) {
+      // Mapear initialStateId a currentStateId para update
+      const updatePayload = {
+        ...payload,
+        currentStateId: payload.initialStateId
+      };
+      delete updatePayload.initialStateId;
       
-      if (this.isEditMode) {
-        this.equipmentService.updateEquipment(this.data.equipment.id, formData)
-          .subscribe(() => this.dialogRef.close(true));
-      } else {  
-        const {currentStateId, ...rest} = formData; 
-        const formDataTransformed = { ...rest, initialStateId: currentStateId }; 
-        this.equipmentService.createEquipment(formDataTransformed)
-          .subscribe(() => this.dialogRef.close(true));
-      }
+      this.equipmentService.updateEquipment(this.data.equipment.id, updatePayload)
+        .subscribe({
+          next: () => this.dialogRef.close(true),
+          error: (err) => console.error('Error updating:', err)
+        });
+    } else {
+      this.equipmentService.createEquipment(payload)
+        .subscribe({
+          next: () => this.dialogRef.close(true),
+          error: (err) => console.error('Error creating:', err)
+        });
     }
   }
+}
 
   onCancel(): void {
     this.dialogRef.close(false);

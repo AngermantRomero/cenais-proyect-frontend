@@ -43,7 +43,7 @@
         <mat-select formControlName="makerId" required>
           @for (maker of makers; track maker.idMaker) {
             <mat-option [value]="maker.idMaker">
-              {{maker.brand}} @if (maker.country.name) {({{maker.country.name}})}
+              {{maker.brand}} @if (maker.country?.name) { ({{maker.country.name}})}
             </mat-option>
           }
         </mat-select>
@@ -80,19 +80,38 @@
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="form-field">
-        <mat-label>Estado Actual*</mat-label>
-        <mat-select formControlName="currentStateId" required>
+        <mat-label>Estado Inicial*</mat-label>
+        <mat-select formControlName="initialStateId" required>  <!-- 👈 CORREGIDO -->
           @for (state of states; track state.id) {
             <mat-option [value]="state.id">
               <span [style.color]="state.color">{{state.name}}</span>
             </mat-option>
           }
         </mat-select>
-        @if (equipmentForm.get('currentStateId')?.invalid) {
+        @if (equipmentForm.get('initialStateId')?.invalid) {
           <mat-error>Selección requerida</mat-error>
         }
       </mat-form-field>
     </div>
+
+    <!-- 👇 NUEVA SECCIÓN: Ubicación (Sitio) -->
+    <div class="form-row single-field">
+  <mat-form-field appearance="outline" class="form-field">
+    <mat-label>Ubicación (Sitio)</mat-label>
+    <mat-select formControlName="siteId">
+      <mat-option [value]="">Sin ubicación</mat-option>
+      @for (site of sites; track site.id) {
+        <mat-option [value]="site.id">
+          {{site.code}} - {{site.locality}} 
+          @if (getProvinceName(site)) {
+            ({{getProvinceName(site)}})
+          }
+        </mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</div>
+
   </form>
 </mat-dialog-content>
 
