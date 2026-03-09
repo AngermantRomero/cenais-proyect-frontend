@@ -1,93 +1,172 @@
 <h2 mat-dialog-title class="dialog-header">
-  {{ isEditMode ? 'Editar Reparación' : 'Nueva Reparación' }}
+  {{ isEditMode ? '✏️ Editar Reparación' : '➕ Nueva Reparación' }}
 </h2>
 
 <mat-dialog-content class="dialog-content">
   <form [formGroup]="repairForm" class="repair-form">
-    <!-- Equipo -->
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Equipo *</mat-label>
-      <mat-select formControlName="equipmentId" required>
-        <mat-option *ngFor="let eq of equipments" [value]="eq.id">
-          {{ eq.serialNumber }} - {{ eq.model?.modelName }} ({{ eq.inventoryNumber }})
-        </mat-option>
-      </mat-select>
-      <mat-error *ngIf="repairForm.get('equipmentId')?.invalid">
-        Debe seleccionar un equipo
-      </mat-error>
-    </mat-form-field>
+    
+    <!-- FILA 1: Información del Equipo + Detalles de la Reparación -->
+    <div class="form-row two-columns">
+      
+      <!-- COLUMNA IZQUIERDA: Información del Equipo -->
+      <div class="form-section">
+        <h3 class="section-title">
+          <mat-icon>info</mat-icon>
+          Información del Equipo
+        </h3>
+        
+        <!-- Equipo -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Seleccionar Equipo *</mat-label>
+          <mat-select formControlName="equipmentId" required>
+            <mat-option *ngFor="let eq of equipments" [value]="eq.id">
+              <div class="equipment-option">
+                <strong>{{ eq.serialNumber }}</strong> - 
+                {{ eq.model?.modelName }} 
+                <span class="inventory-badge">({{ eq.inventoryNumber }})</span>
+              </div>
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="repairForm.get('equipmentId')?.invalid">
+            ⚠️ Debe seleccionar un equipo
+          </mat-error>
+        </mat-form-field>
+      </div>
 
-    <!-- Descripción -->
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Descripción *</mat-label>
-      <textarea 
-        matInput 
-        formControlName="description" 
-        rows="4" 
-        placeholder="Describa el trabajo a realizar...">
-      </textarea>
-      <mat-error *ngIf="repairForm.get('description')?.invalid">
-        La descripción es requerida (mínimo 5 caracteres)
-      </mat-error>
-    </mat-form-field>
+      <!-- COLUMNA DERECHA: Detalles de la Reparación -->
+      <div class="form-section">
+        <h3 class="section-title">
+          <mat-icon>description</mat-icon>
+          Detalles de la Reparación
+        </h3>
 
-    <!-- Fechas -->
-    <div class="form-row">
-      <mat-form-field appearance="outline" class="form-field">
-        <mat-label>Fecha de inicio *</mat-label>
-        <input matInput [matDatepicker]="startPicker" formControlName="startDate" required>
-        <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
-        <mat-datepicker #startPicker></mat-datepicker>
-        <mat-error *ngIf="repairForm.get('startDate')?.invalid">
-          Fecha requerida
-        </mat-error>
-      </mat-form-field>
+        <!-- Descripción -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Descripción del trabajo *</mat-label>
+          <textarea 
+            matInput 
+            formControlName="description" 
+            rows="3" 
+            placeholder="Describa detalladamente el trabajo a realizar...">
+          </textarea>
+          <mat-hint align="end">{{ repairForm.get('description')?.value?.length || 0 }}/500</mat-hint>
+          <mat-error *ngIf="repairForm.get('description')?.invalid">
+            ⚠️ La descripción es requerida (mínimo 5 caracteres)
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
 
-      <mat-form-field appearance="outline" class="form-field">
-        <mat-label>Fecha de finalización</mat-label>
-        <input matInput [matDatepicker]="endPicker" formControlName="endDate">
-        <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
-        <mat-datepicker #endPicker></mat-datepicker>
+    <!-- FILA 2: Fechas + Asignación -->
+    <div class="form-row two-columns">
+      
+      <!-- COLUMNA IZQUIERDA: Fechas -->
+      <div class="form-section">
+        <h3 class="section-title">
+          <mat-icon>event</mat-icon>
+          Fechas
+        </h3>
+
+        <!-- Fecha de inicio -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>📅 Fecha de inicio *</mat-label>
+          <input 
+            matInput 
+            [matDatepicker]="startPicker" 
+            formControlName="startDate" 
+            required
+            placeholder="DD/MM/YYYY">
+          <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+          <mat-datepicker #startPicker></mat-datepicker>
+          <mat-error *ngIf="repairForm.get('startDate')?.invalid">
+            ⚠️ Fecha requerida
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Fecha de finalización -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>📅 Fecha de finalización</mat-label>
+          <input 
+            matInput 
+            [matDatepicker]="endPicker" 
+            formControlName="endDate"
+            placeholder="DD/MM/YYYY">
+          <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+          <mat-datepicker #endPicker></mat-datepicker>
+          <mat-hint *ngIf="!repairForm.get('endDate')?.value">Opcional</mat-hint>
+        </mat-form-field>
+      </div>
+
+      <!-- COLUMNA DERECHA: Asignación -->
+      <div class="form-section">
+        <h3 class="section-title">
+          <mat-icon>assignment_ind</mat-icon>
+          Asignación
+        </h3>
+
+        <!-- Estado -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>⚙️ Estado</mat-label>
+          <mat-select formControlName="status">
+            <mat-option *ngFor="let status of statuses" [value]="status.value">
+              <span class="status-option" [ngClass]="'status-' + status.value">
+                {{ status.label }}
+              </span>
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Técnico asignado -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>👤 Técnico asignado</mat-label>
+          <mat-select formControlName="technicianId">
+            <mat-option [value]="null">
+              <em>Sin asignar</em>
+            </mat-option>
+            <mat-option *ngFor="let tech of technicians" [value]="tech.id">
+              <div class="technician-option">
+                <strong>{{ tech.name }}</strong>
+                <small *ngIf="tech.lastName">{{ tech.lastName }}</small>
+              </div>
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- FILA 3: Observaciones (ocupa todo el ancho) -->
+    <div class="form-section full-width-section">
+      <h3 class="section-title">
+        <mat-icon>note</mat-icon>
+        Notas adicionales
+      </h3>
+
+      <!-- Observaciones -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Observaciones</mat-label>
+        <textarea 
+          matInput 
+          formControlName="observations" 
+          rows="2"
+          placeholder="Información adicional relevante..."></textarea>
+        <mat-hint align="end">Opcional</mat-hint>
       </mat-form-field>
     </div>
 
-    <!-- Estado y Técnico -->
-    <div class="form-row">
-      <mat-form-field appearance="outline" class="form-field">
-        <mat-label>Estado</mat-label>
-        <mat-select formControlName="status">
-          <mat-option *ngFor="let status of statuses" [value]="status.value">
-            {{ status.label }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="form-field">
-        <mat-label>Técnico asignado</mat-label>
-        <mat-select formControlName="technicianId">
-          <mat-option [value]="">Sin asignar</mat-option>
-          <mat-option *ngFor="let tech of technicians" [value]="tech.id">
-            {{ tech.name }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
-
-    <!-- Observaciones -->
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Observaciones</mat-label>
-      <textarea matInput formControlName="observations" rows="3"></textarea>
-    </mat-form-field>
   </form>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end" class="dialog-actions">
-  <button mat-button class="cancel-btn" (click)="onCancel()">Cancelar</button>
+  <button mat-button class="cancel-btn" (click)="onCancel()">
+    <mat-icon>close</mat-icon>
+    Cancelar
+  </button>
   <button 
     mat-raised-button 
     color="primary" 
     (click)="onSubmit()" 
     [disabled]="repairForm.invalid">
+    <mat-icon>{{ isEditMode ? 'edit' : 'save' }}</mat-icon>
     {{ isEditMode ? 'Actualizar' : 'Guardar' }}
   </button>
 </mat-dialog-actions>
