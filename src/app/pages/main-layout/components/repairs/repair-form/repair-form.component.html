@@ -1,0 +1,93 @@
+<h2 mat-dialog-title class="dialog-header">
+  {{ isEditMode ? 'Editar Reparación' : 'Nueva Reparación' }}
+</h2>
+
+<mat-dialog-content class="dialog-content">
+  <form [formGroup]="repairForm" class="repair-form">
+    <!-- Equipo -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Equipo *</mat-label>
+      <mat-select formControlName="equipmentId" required>
+        <mat-option *ngFor="let eq of equipments" [value]="eq.id">
+          {{ eq.serialNumber }} - {{ eq.model?.modelName }} ({{ eq.inventoryNumber }})
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="repairForm.get('equipmentId')?.invalid">
+        Debe seleccionar un equipo
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Descripción -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Descripción *</mat-label>
+      <textarea 
+        matInput 
+        formControlName="description" 
+        rows="4" 
+        placeholder="Describa el trabajo a realizar...">
+      </textarea>
+      <mat-error *ngIf="repairForm.get('description')?.invalid">
+        La descripción es requerida (mínimo 5 caracteres)
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Fechas -->
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Fecha de inicio *</mat-label>
+        <input matInput [matDatepicker]="startPicker" formControlName="startDate" required>
+        <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+        <mat-datepicker #startPicker></mat-datepicker>
+        <mat-error *ngIf="repairForm.get('startDate')?.invalid">
+          Fecha requerida
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Fecha de finalización</mat-label>
+        <input matInput [matDatepicker]="endPicker" formControlName="endDate">
+        <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+        <mat-datepicker #endPicker></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <!-- Estado y Técnico -->
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Estado</mat-label>
+        <mat-select formControlName="status">
+          <mat-option *ngFor="let status of statuses" [value]="status.value">
+            {{ status.label }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Técnico asignado</mat-label>
+        <mat-select formControlName="technicianId">
+          <mat-option [value]="">Sin asignar</mat-option>
+          <mat-option *ngFor="let tech of technicians" [value]="tech.id">
+            {{ tech.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <!-- Observaciones -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Observaciones</mat-label>
+      <textarea matInput formControlName="observations" rows="3"></textarea>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="dialog-actions">
+  <button mat-button class="cancel-btn" (click)="onCancel()">Cancelar</button>
+  <button 
+    mat-raised-button 
+    color="primary" 
+    (click)="onSubmit()" 
+    [disabled]="repairForm.invalid">
+    {{ isEditMode ? 'Actualizar' : 'Guardar' }}
+  </button>
+</mat-dialog-actions>
