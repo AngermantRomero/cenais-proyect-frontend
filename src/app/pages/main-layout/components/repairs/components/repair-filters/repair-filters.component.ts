@@ -86,15 +86,11 @@ export class RepairFiltersComponent implements OnInit {
     if (this.filter.startDate) {
        cleanFilter.startDate = moment(this.filter.startDate).format('YYYY-MM-DD');
     console.log('📅 Fecha desde original:', this.filter.endDate);
-    console.log('📅 Fecha desde formateada:', cleanFilter.startDateFrom);
+    console.log('📅 Fecha desde formateada:', cleanFilter.startDate);
     }
     if (this.filter.endDate) {
       cleanFilter.startDateTo = moment(this.filter.startDate).format('YYYY-MM-DD');
-    console.log('📅 Fecha hasta original:', this.filter.endDate);
-    console.log('📅 Fecha hasta formateada:', cleanFilter.startDateTo);
     }
-    
-    if (this.filter.search) cleanFilter.search = this.filter.search;
     
     console.log('🔍 Aplicando filtros:', cleanFilter); // Para depurar
     this.filterChange.emit(cleanFilter);

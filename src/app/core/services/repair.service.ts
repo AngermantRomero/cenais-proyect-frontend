@@ -21,8 +21,8 @@ export class RepairService {
     if (filter.equipmentId) params = params.set('equipmentId', filter.equipmentId);
     if (filter.technicianId) params = params.set('technicianId', filter.technicianId);
     if (filter.status) params = params.set('status', filter.status);
-    if (filter.startDate) params = params.set('startDateFrom', filter.startDate);
-    if (filter.endDate) params = params.set('startDateTo', filter.endDate);
+    if (filter.startDate) params = params.set('startDate', filter.startDate);
+    if (filter.endDate) params = params.set('endDate', filter.endDate);
     if (filter.search) params = params.set('search', filter.search);
   }
 

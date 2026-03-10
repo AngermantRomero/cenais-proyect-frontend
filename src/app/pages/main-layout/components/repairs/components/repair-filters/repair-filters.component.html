@@ -1,69 +1,87 @@
 <mat-card class="filters-card">
   <mat-card-content>
     <div class="filters-grid">
-      <!-- Búsqueda general -->
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Buscar por descripción</mat-label>
-        <input matInput [(ngModel)]="filter.search" placeholder="Buscar...">
-        <mat-icon matSuffix>search</mat-icon>
-      </mat-form-field>
+      <!-- Primera fila: Equipo, Técnico, Estado -->
+      <div class="filter-row">
+        <mat-form-field appearance="outline" class="filter-item">
+          <mat-label>Equipo</mat-label>
+          <mat-select [(ngModel)]="filter.equipmentId">
+            <mat-option [value]="''">Todos los equipos</mat-option>
+            <mat-option *ngFor="let eq of equipments" [value]="eq.id">
+              <div class="option-content">
+                <strong>{{ eq.serialNumber }}</strong>
+                <span class="option-detail"> - {{ eq.model?.modelName }}</span>
+              </div>
+            </mat-option>
+          </mat-select>
+          <mat-icon matPrefix>devices</mat-icon>
+        </mat-form-field>
 
-      <!-- Equipo -->
-      <mat-form-field appearance="outline">
-        <mat-label>Equipo</mat-label>
-        <mat-select [(ngModel)]="filter.equipmentId">
-          <mat-option [value]="''">Todos</mat-option>
-          <mat-option *ngFor="let eq of equipments" [value]="eq.id">
-            {{ eq.serialNumber }} - {{ eq.model?.modelName }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+        <mat-form-field appearance="outline" class="filter-item">
+          <mat-label>Técnico</mat-label>
+          <mat-select [(ngModel)]="filter.technicianId">
+            <mat-option [value]="''">Todos los técnicos</mat-option>
+            <mat-option *ngFor="let tech of technicians" [value]="tech.id">
+              <div class="option-content">
+                <strong>{{ tech.name }}</strong>
+                <span class="option-detail" *ngIf="tech.lastName"> {{ tech.lastName }}</span>
+              </div>
+            </mat-option>
+          </mat-select>
+          <mat-icon matPrefix>person</mat-icon>
+        </mat-form-field>
 
-      <!-- 👇 NUEVO: Técnico -->
-      <mat-form-field appearance="outline">
-        <mat-label>Técnico</mat-label>
-        <mat-select [(ngModel)]="filter.technicianId">
-          <mat-option [value]="''">Todos</mat-option>
-          <mat-option *ngFor="let tech of technicians" [value]="tech.id">
-            {{ tech.name }} {{ tech.lastName || '' }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+        <mat-form-field appearance="outline" class="filter-item">
+          <mat-label>Estado</mat-label>
+          <mat-select [(ngModel)]="filter.status">
+            <mat-option [value]="''">Todos los estados</mat-option>
+            <mat-option *ngFor="let status of statuses" [value]="status.value">
+              <span class="status-badge" [ngClass]="'status-' + status.value">
+                {{ status.label }}
+              </span>
+            </mat-option>
+          </mat-select>
+          <mat-icon matPrefix>check_circle</mat-icon>
+        </mat-form-field>
+      </div>
 
-      <!-- Estado -->
-      <mat-form-field appearance="outline">
-        <mat-label>Estado</mat-label>
-        <mat-select [(ngModel)]="filter.status">
-          <mat-option [value]="''">Todos</mat-option>
-          <mat-option *ngFor="let status of statuses" [value]="status.value">
-            {{ status.label }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+      <!-- Segunda fila: Fechas -->
+      <div class="filter-row">
+        <mat-form-field appearance="outline" class="filter-item">
+          <mat-label>Fecha desde</mat-label>
+          <input 
+            matInput 
+            [matDatepicker]="fromPicker" 
+            [(ngModel)]="filter.startDate"
+            placeholder="DD/MM/YYYY">
+          <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
+          <mat-datepicker #fromPicker></mat-datepicker>
+          <mat-icon matPrefix>event</mat-icon>
+        </mat-form-field>
 
-      <!-- Fecha desde -->
-      <mat-form-field appearance="outline">
-        <mat-label>Fecha desde</mat-label>
-        <input matInput [matDatepicker]="fromPicker" [(ngModel)]="filter.startDate"placeholder="DD/MM/YYYY">
-        <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
-        <mat-datepicker #fromPicker></mat-datepicker>
-      </mat-form-field>
+        <mat-form-field appearance="outline" class="filter-item">
+          <mat-label>Fecha hasta</mat-label>
+          <input 
+            matInput 
+            [matDatepicker]="toPicker" 
+            [(ngModel)]="filter.endDate"
+            placeholder="DD/MM/YYYY">
+          <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
+          <mat-datepicker #toPicker></mat-datepicker>
+          <mat-icon matPrefix>event</mat-icon>
+        </mat-form-field>
 
-      <!-- Fecha hasta -->
-      <mat-form-field appearance="outline">
-        <mat-label>Fecha hasta</mat-label>
-        <input matInput [matDatepicker]="toPicker" [(ngModel)]="filter.endDate"placeholder="DD/MM/YYYY">
-        <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
-        <mat-datepicker #toPicker></mat-datepicker>
-      </mat-form-field>
+        <!-- Espacio vacío para mantener alineación (opcional) -->
+        <div class="filter-item placeholder"></div>
+      </div>
     </div>
 
     <div class="filters-actions">
-      <button mat-button (click)="clearFilters()">
+      <button mat-button class="clear-btn" (click)="clearFilters()">
         <mat-icon>clear</mat-icon>
         Limpiar filtros
       </button>
-      <button mat-raised-button color="primary" (click)="applyFilters()">
+      <button mat-raised-button class="apply-btn" (click)="applyFilters()">
         <mat-icon>filter_list</mat-icon>
         Aplicar filtros
       </button>

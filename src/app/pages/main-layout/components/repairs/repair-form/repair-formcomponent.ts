@@ -84,6 +84,9 @@ export class RepairFormComponent implements OnInit {
     this.loadEquipments();
     this.loadTechnicians();
     if (this.isEditMode && this.data.repair) {
+    console.log('📦 Datos de reparación a editar:', this.data.repair);
+    console.log('📅 Fecha inicio original:', this.data.repair.startDate);
+    console.log('📅 Fecha fin original:', this.data.repair.endDate);
       this.patchFormValues(this.data.repair);
     }
   }
@@ -112,11 +115,33 @@ export class RepairFormComponent implements OnInit {
   }
 
   patchFormValues(repair: Repair): void {
+      console.log('🔄 Aplicando patch con:', repair);
+        // Intentar diferentes formas de parsear la fecha
+  let startDate = null;
+  if (repair.startDate) {
+    // Si viene como string YYYY-MM-DD
+    if (typeof repair.startDate === 'string') {
+      const [year, month, day] = repair.startDate.split('-');
+      startDate = new Date(parseInt(year), parseInt(month)-1, parseInt(day));
+      console.log('📅 StartDate parseado:', startDate);
+    }
+  }
+  let endDate = null;
+  if (repair.endDate) {
+    if (typeof repair.endDate === 'string') {
+      const [year, month, day] = repair.endDate.split('-');
+      endDate = new Date(parseInt(year), parseInt(month)-1, parseInt(day));
+      console.log('📅 EndDate parseado:', endDate);
+    }
+  }
+
+
+
     this.repairForm.patchValue({
       equipmentId: repair.equipmentId,
       description: repair.description,
-      startDate: repair.startDate,
-      endDate: repair.endDate || '',
+      startDate: startDate,
+      endDate: endDate,
       status: repair.status,
       technicianId: repair.technicianId || null,
       observations: repair.observations || '',
