@@ -1,0 +1,111 @@
+.repairs-container {
+  padding: 24px;
+
+  .header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+
+    h1 {
+      margin: 0;
+      font-size: 24px;
+      color: #333;
+    }
+  }
+
+  .table-card {
+    padding: 16px;
+    margin-top: 16px;
+
+    .loading-spinner {
+      display: flex;
+      justify-content: center;
+      padding: 48px;
+    }
+
+    table {
+      width: 100%;
+
+      .equipment-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  
+  .serial {
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+  }
+  
+  .inventory {
+    font-size: 12px;
+    color: #666;
+    
+    &::before {
+      content: 'INV: ';
+      font-size: 10px;
+      color: #999;
+    }
+  }
+  
+  .model-name {
+    font-size: 11px;
+    color: #999;
+    font-style: italic;
+  }
+}
+
+      .description {
+        max-width: 200px;
+        display: block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .status-chip {
+        padding: 4px 12px;
+        border-radius: 16px;
+        font-size: 12px;
+        font-weight: 500;
+        display: inline-block;
+
+        &.status-pending {
+          background-color: #fff3e0;
+          color: #e65100;
+        }
+
+        &.status-in-progress {
+          background-color: #e3f2fd;
+          color: #0d47a1;
+        }
+
+        &.status-completed {
+          background-color: #e8f5e8;
+          color: #1b5e20;
+        }
+
+        &.status-cancelled {
+          background-color: #ffebee;
+          color: #b71c1c;
+        }
+      }
+
+      .no-data {
+        color: #999;
+        font-style: italic;
+      }
+
+      .mat-row.no-data-row {
+        height: 100px;
+
+        .mat-cell {
+          text-align: center;
+          color: #999;
+          font-style: italic;
+        }
+      }
+    }
+  }
+}

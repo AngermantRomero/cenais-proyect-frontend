@@ -1,0 +1,124 @@
+<div class="detail-container" *ngIf="!isLoading && repair">
+  <div class="header-actions">
+    <h1>Detalle de Reparación</h1>
+    <button mat-raised-button color="primary" (click)="editRepair()">
+      <mat-icon>edit</mat-icon>
+      Editar
+    </button>
+    <button mat-stroked-button (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+      Volver
+    </button>
+  </div>
+
+  <mat-card class="detail-card">
+    <mat-card-header>
+      <mat-card-title>
+        Reparación #{{ repair.id | slice:0:8 }}
+      </mat-card-title>
+      <mat-card-subtitle>
+        <span class="badge" [ngClass]="getStatusChipClass(repair.status)">
+          {{ getStatusText(repair.status) }}
+        </span>
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="info-grid">
+        <!-- Equipo Card -->
+        <div class="info-card">
+          <h3>
+            <mat-icon>devices</mat-icon>
+            Equipo
+          </h3>
+          <div class="info-row">
+            <span class="label">Serial:</span>
+            <span class="value">{{ repair.equipment.serialNumber }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Inventario:</span>
+            <span class="value">{{ repair.equipment.inventoryNumber }}</span>
+          </div>
+          <div class="info-row" *ngIf="repair.equipment.model">
+            <span class="label">Modelo:</span>
+            <span class="value">{{ repair.equipment.model.modelName }}</span>
+          </div>
+          <div class="info-row" *ngIf="repair.equipment.maker">
+            <span class="label">Fabricante:</span>
+            <span class="value">{{ repair.equipment.maker.brand }}</span>
+          </div>
+        </div>
+
+        <!-- Fechas Card -->
+        <div class="info-card">
+          <h3>
+            <mat-icon>event</mat-icon>
+            Fechas
+          </h3>
+          <div class="info-row">
+            <span class="label">Inicio:</span>
+            <span class="value">{{ repair.startDate | date:'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Fin:</span>
+            <span class="value">{{ repair.endDate ? (repair.endDate | date:'dd/MM/yyyy') : 'En curso' }}</span>
+          </div>
+        </div>
+
+        <!-- Técnico Card -->
+        <div class="info-card" *ngIf="repair.technician">
+          <h3>
+            <mat-icon>person</mat-icon>
+            Técnico asignado
+          </h3>
+          <div class="info-row">
+            <span class="label">Nombre:</span>
+            <span class="value">{{ repair.technician.name }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Email:</span>
+            <span class="value">{{ repair.technician.email }}</span>
+          </div>
+        </div>
+
+        <!-- Descripción Card (full width) -->
+        <div class="info-card full-width-card">
+          <h3>
+            <mat-icon>description</mat-icon>
+            Descripción
+          </h3>
+          <p class="description-text">{{ repair.description }}</p>
+        </div>
+
+        <!-- Observaciones Card (full width) -->
+        <div class="info-card full-width-card" *ngIf="repair.observations">
+          <h3>
+            <mat-icon>note</mat-icon>
+            Observaciones
+          </h3>
+          <p class="observations-text">{{ repair.observations }}</p>
+        </div>
+
+        <!-- Información del Sistema -->
+        <div class="info-card system-info full-width-card">
+          <h3>
+            <mat-icon>info</mat-icon>
+            Información del sistema
+          </h3>
+          <div class="info-row">
+            <span class="label">Creado:</span>
+            <span class="value">{{ repair.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Actualizado:</span>
+            <span class="value">{{ repair.updatedAt | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<div class="loading-container" *ngIf="isLoading">
+  <mat-spinner diameter="50"></mat-spinner>
+</div>

@@ -8,6 +8,9 @@ import { SitesComponent } from './components/sites/sites.component';
 import { roleGuard } from '../../core/guards/role.guard';
 import { MakerComponent } from './components/maker/maker.component';
 import { ModelsComponent } from './components/models/models.component';
+import { RepairListComponent } from './components/repairs/repair-list.component';
+import { RepairFormComponent } from './components/repairs/repair-form/repair-formcomponent';
+import { RepairDetailComponent } from './components/repairs/repair-detail/repair-detail.component';
 export const mainLayoutRoutes: Routes = [
   {
     path: '',
@@ -43,6 +46,25 @@ export const mainLayoutRoutes: Routes = [
       {
       path: 'model',
       component: ModelsComponent
+      },
+      {
+        path: 'repairs',
+        component: RepairListComponent
+      },
+     
+      {
+        path: 'repairs/new',
+        component: RepairFormComponent
+      },
+     
+      {
+        path: 'repairs/:id',
+        component: RepairDetailComponent
+      },
+     
+      {
+        path: 'repairs/:id/edit',
+        component: RepairFormComponent
       },     
     ]
   }

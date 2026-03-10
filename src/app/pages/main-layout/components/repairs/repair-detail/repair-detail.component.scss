@@ -1,0 +1,283 @@
+// Paleta de colores rojo vino
+$wine-primary: #800020;      // Rojo vino principal
+$wine-light: #b3002d;        // Rojo vino más claro
+$wine-dark: #4a0013;         // Rojo vino más oscuro
+$wine-accent: #c41e3a;        // Rojo vino acento (cardinal)
+$wine-soft: #fdf2f4;          // Fondo muy suave rosado/vino
+
+.detail-container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+    background: white;
+    padding: 16px 24px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(128, 0, 32, 0.1); // Sombra con tinte vino
+
+    h1 {
+      margin: 0;
+      flex: 1;
+      font-size: 28px;
+      font-weight: 500;
+      color: $wine-dark;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      &::before {
+        content: 'build';
+        font-family: 'Material Icons';
+        font-size: 32px;
+        color: $wine-primary;
+      }
+    }
+
+    button[color="primary"] {
+    background:white !important;
+    color: $wine-primary !important;
+    border: 1px solid $wine-primary !important;
+    box-shadow: none !important;
+    transition: all 0.2s ease;
+      
+      &:hover {
+        background-color: $wine-light;
+        border-color: $wine-light !important;
+        color: $wine-light !important;
+      
+      }
+    }
+  }
+   button[mat-stroked-button] {
+      background: white !important;
+      color: $wine-primary !important;
+      border: 1px solid $wine-primary !important;
+      box-shadow: none !important;
+      transition: all 0.2s ease;
+
+      mat-icon {
+        color: $wine-primary;
+      }
+
+      &:hover {
+        background: $wine-soft !important;
+        border-color: $wine-light !important;
+        color: $wine-light !important;
+        
+        mat-icon {
+          color: $wine-light;
+        }
+      }
+    }
+  
+
+  .detail-card {
+    border-radius: 16px !important;
+    box-shadow: 0 4px 20px rgba(128, 0, 32, 0.15) !important;
+    overflow: hidden;
+
+    mat-card-header {
+      background: linear-gradient(135deg, $wine-primary 0%, $wine-light 100%);
+      padding: 20px 24px !important;
+      margin: 0 !important;
+
+      mat-card-title {
+        color: white !important;
+        font-size: 22px !important;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        &::before {
+          content: 'handyman';
+          font-family: 'Material Icons';
+          font-size: 28px;
+          color: rgba(255,255,255,0.9);
+        }
+      }
+
+      mat-card-subtitle {
+        color: rgba(255,255,255,0.9) !important;
+        font-size: 14px;
+        margin-top: 8px;
+
+        .badge {
+          background: rgba(255,255,255,0.2);
+          padding: 4px 12px;
+          border-radius: 20px;
+        }
+      }
+    }
+
+    mat-card-content {
+      padding: 24px !important;
+      background: #fef9f9; // Fondo ligeramente rosado
+    }
+    
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      margin-bottom: 24px;
+
+      @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .info-card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      border-left: 4px solid $wine-primary;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 2px 8px rgba(128, 0, 32, 0.08);
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(128, 0, 32, 0.15);
+      }
+
+      h3 {
+        font-size: 16px;
+        font-weight: 600;
+        color: $wine-primary;
+        margin: 0 0 16px 0;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        mat-icon {
+          font-size: 20px;
+          width: 20px;
+          height: 20px;
+          color: $wine-light;
+        }
+      }
+
+      .info-row {
+        display: flex;
+        margin-bottom: 12px;
+        
+        &:last-child {
+          margin-bottom: 0;
+        }
+
+        .label {
+          width: 100px;
+          font-size: 13px;
+          color: $wine-dark;
+          font-weight: 500;
+          opacity: 0.7;
+        }
+
+        .value {
+          flex: 1;
+          font-size: 14px;
+          color: #333;
+          font-weight: 500;
+
+          &.badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: capitalize;
+
+            &.status-pending {
+              background: #fff3e0;
+              color: #e65100;
+            }
+
+            &.status-in-progress {
+              background: #e3f2fd;
+              color: #0d47a1;
+            }
+
+            &.status-completed {
+              background: #e8f5e8;
+              color: #1b5e20;
+            }
+
+            &.status-cancelled {
+              background: #ffebee;
+              color: #b71c1c;
+            }
+          }
+        }
+      }
+    }
+
+    .full-width-card {
+      grid-column: 1 / -1;
+      background: white;
+      border-left-color: $wine-accent;
+
+      h3 {
+        color: $wine-accent;
+        
+        mat-icon {
+          color: $wine-accent;
+          opacity: 0.8;
+        }
+      }
+
+      .description-text, .observations-text {
+        font-size: 15px;
+        line-height: 1.7;
+        color: #333;
+        margin: 0;
+        padding: 8px 0;
+        background: $wine-soft;
+        padding: 16px;
+        border-radius: 8px;
+      }
+    }
+
+    .system-info {
+      background: $wine-soft;
+      border-left-color: $wine-dark;
+      margin-top: 16px;
+
+      h3 {
+        color: $wine-dark;
+        
+        mat-icon {
+          color: $wine-dark;
+        }
+      }
+
+      .info-row {
+        .label {
+          color: $wine-dark;
+          opacity: 0.8;
+        }
+        .value {
+          color: $wine-dark;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+
+  .loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(128, 0, 32, 0.1);
+  }
+}

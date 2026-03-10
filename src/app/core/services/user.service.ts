@@ -1,20 +1,29 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse,HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { User, Role } from '../interfaces/user.interface'; 
 import { ArrayResponse, SingleResponse } from '../interfaces/http.responses.interface';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../../enviroments/enviroment';
 
+type RoleName = 'Administrator' | 'Guest' | 'Technician';
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
   private readonly apiBaseUrl = environment.apiUrl;
   private readonly endpoints = environment.endpoints;
-
+   private readonly roleTranslationMap: { [key: string]: string } = {
+    'Administrator': 'Administrador',
+    'Guest': 'Invitado',
+    'Technician': 'Técnico'
+  };
+  
+  
   constructor(private http: HttpClient) {}
-
+   private translateRoleName(name: string): string {
+    return this.roleTranslationMap[name] || name;
+  }
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'Ocurrió un error';
     
@@ -71,7 +80,7 @@ export class UserService {
     return name; // Devuelve el original si no hay traducción
   };
 
-  // 3. Transformamos los usuarios
+
 return this.http.get<ArrayResponse<User>>(url).pipe(
   map((response: ArrayResponse<User>) => {
     const transformedData: User[] = response.data.map(user => {
@@ -97,7 +106,42 @@ return this.http.get<ArrayResponse<User>>(url).pipe(
   catchError(this.handleError)
 );
 }
+   getUsersByRole(role: RoleName): Observable<ArrayResponse<User>> {
+    const url = `${this.apiBaseUrl}${this.endpoints.users}`;
+    
+    return this.http.get<ArrayResponse<User>>(url).pipe(
+      map((response: ArrayResponse<User>) => {
+        
+        const filteredData = response.data.filter(user => 
+          user.role?.name === role
+        );
+        
+        const transformedData = filteredData.map(user => ({
+          ...user,
+          role: user.role ? {
+            ...user.role,
+            name: this.translateRoleName(user.role.name)
+          } : null
+        }));
+        
+        return {
+          ...response,
+          data: transformedData
+        };
+      }),
+      catchError(this.handleError)
+    );
+  }
+  getTechnicians(): Observable<ArrayResponse<User>> {
+  return this.getUsersByRole('Technician');
+}
+getAdministrators(): Observable<ArrayResponse<User>> {
+  return this.getUsersByRole('Administrator');
+}
 
+getGuests(): Observable<ArrayResponse<User>> {
+  return this.getUsersByRole('Guest');
+}
   createUser(userData: Omit<User, 'id'>): Observable<SingleResponse<User>> {
     const url = `${this.apiBaseUrl}${this.endpoints.auth}/register`;
     return this.http.post<SingleResponse<User>>(url, userData).pipe(

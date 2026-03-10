@@ -1,0 +1,119 @@
+<div class="repairs-container">
+  <div class="header-section">
+    <h1>Gestión de Reparaciones</h1>
+    <button mat-raised-button color="primary" (click)="openCreateDialog()">
+      <mat-icon>add</mat-icon>
+      Nueva Reparación
+    </button>
+  </div>
+
+  <!-- Componente de filtros -->
+  <app-repair-filters (filterChange)="onFilterChange($event)"></app-repair-filters>
+
+  <mat-card class="table-card">
+    <div class="loading-spinner" *ngIf="isLoading">
+      <mat-spinner diameter="50"></mat-spinner>
+    </div>
+
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" *ngIf="!isLoading">
+      
+      <!-- Equipo -->
+      <ng-container matColumnDef="equipment">
+        <th mat-header-cell *matHeaderCellDef>Equipo</th>
+        <td mat-cell *matCellDef="let repair">
+          <div class="equipment-info">
+            <strong>{{ repair.equipment.serialNumber }}</strong>
+            <small>{{ repair.equipment.inventoryNumber }}</small>
+            <span class="model-name" *ngIf="repair.equipment.model">
+              {{ repair.equipment.model.modelName }}
+            </span>
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Descripción -->
+      <ng-container matColumnDef="description">
+        <th mat-header-cell *matHeaderCellDef>Descripción</th>
+        <td mat-cell *matCellDef="let repair">
+          <span class="description" [matTooltip]="repair.description">
+            {{ repair.description | slice:0:50 }}{{ repair.description.length > 50 ? '...' : '' }}
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- Fecha Inicio -->
+      <ng-container matColumnDef="startDate">
+        <th mat-header-cell *matHeaderCellDef>Inicio</th>
+        <td mat-cell *matCellDef="let repair">
+          {{ repair.startDate | date:'dd/MM/yyyy' }}
+        </td>
+      </ng-container>
+
+      <!-- Fecha Fin -->
+      <ng-container matColumnDef="endDate">
+        <th mat-header-cell *matHeaderCellDef>Fin</th>
+        <td mat-cell *matCellDef="let repair">
+          {{ repair.endDate ? (repair.endDate | date:'dd/MM/yyyy') : '-' }}
+        </td>
+      </ng-container>
+
+      <!-- Estado -->
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Estado</th>
+        <td mat-cell *matCellDef="let repair">
+          <span class="status-chip" [ngClass]="getStatusChipClass(repair.status)">
+            {{ getStatusText(repair.status) }}
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- Técnico -->
+      <ng-container matColumnDef="technician">
+        <th mat-header-cell *matHeaderCellDef>Técnico</th>
+        <td mat-cell *matCellDef="let repair">
+          <span *ngIf="repair.technician; else noTechnician">
+            {{ repair.technician.name }}
+          </span>
+          <ng-template #noTechnician>
+            <span class="no-data">-</span>
+          </ng-template>
+        </td>
+      </ng-container>
+
+      <!-- Acciones -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Acciones</th>
+        <td mat-cell *matCellDef="let repair">
+          <button mat-icon-button color="primary" (click)="openEditDialog(repair)" matTooltip="Editar">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteRepair(repair)" matTooltip="Eliminar">
+            <mat-icon>delete</mat-icon>
+          </button>
+          <button mat-icon-button [matMenuTriggerFor]="menu" matTooltip="Más acciones">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item *ngIf="repair.status !== 'completed'" (click)="completeRepair(repair)">
+              <mat-icon>check_circle</mat-icon>
+              <span>Marcar como completada</span>
+            </button>
+            <button mat-menu-item [routerLink]="['/repairs', repair.id]">
+              <mat-icon>visibility</mat-icon>
+              <span>Ver detalles</span>
+            </button>
+          </mat-menu>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+      <tr class="mat-row no-data-row" *matNoDataRow>
+        <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+          No hay reparaciones registradas
+        </td>
+      </tr>
+    </table>
+  </mat-card>
+</div>

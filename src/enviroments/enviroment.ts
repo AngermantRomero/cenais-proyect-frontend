@@ -14,6 +14,7 @@ export const environment = {
     states:'/type-states',
     maker:'/makers',
     model:'/models',
-    country:'/countries'
+    country:'/countries',
+     repairs: '/repairs' 
   }
 };
