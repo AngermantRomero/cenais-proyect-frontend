@@ -1,0 +1,90 @@
+<mat-card class="filters-card">
+  <mat-card-content>
+    <div class="filters-grid">
+      <!-- Fecha desde -->
+      <mat-form-field appearance="outline">
+        <mat-label>Fecha desde</mat-label>
+        <input 
+          matInput 
+          [matDatepicker]="fromPicker" 
+          [(ngModel)]="filters.startDate"
+          placeholder="DD/MM/YYYY">
+        <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
+        <mat-datepicker #fromPicker></mat-datepicker>
+        <mat-icon matPrefix>event</mat-icon>
+      </mat-form-field>
+
+      <!-- Fecha hasta -->
+      <mat-form-field appearance="outline">
+        <mat-label>Fecha hasta</mat-label>
+        <input 
+          matInput 
+          [matDatepicker]="toPicker" 
+          [(ngModel)]="filters.endDate"
+          placeholder="DD/MM/YYYY">
+        <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
+        <mat-datepicker #toPicker></mat-datepicker>
+        <mat-icon matPrefix>event</mat-icon>
+      </mat-form-field>
+
+      <!-- Sitio -->
+      <mat-form-field appearance="outline">
+        <mat-label>Sitio</mat-label>
+        <mat-select [(ngModel)]="filters.siteId">
+          <mat-option [value]="''">Todos</mat-option>
+          <mat-option *ngFor="let site of sites" [value]="site.id">
+            {{ site.code }} - {{ site.locality }}
+          </mat-option>
+        </mat-select>
+        <mat-icon matPrefix>place</mat-icon>
+      </mat-form-field>
+
+      <!-- Tipo de Equipo -->
+      <mat-form-field appearance="outline">
+        <mat-label>Tipo de Equipo</mat-label>
+        <mat-select [(ngModel)]="filters.equipmentTypeId">
+          <mat-option [value]="''">Todos</mat-option>
+          <mat-option *ngFor="let type of equipmentTypes" [value]="type.id">
+            {{ type.name }}
+          </mat-option>
+        </mat-select>
+        <mat-icon matPrefix>category</mat-icon>
+      </mat-form-field>
+
+      <!-- Técnico -->
+      <mat-form-field appearance="outline">
+        <mat-label>Técnico</mat-label>
+        <mat-select [(ngModel)]="filters.technicianId">
+          <mat-option [value]="''">Todos</mat-option>
+          <mat-option *ngFor="let tech of technicians" [value]="tech.id">
+            {{ tech.name }}
+          </mat-option>
+        </mat-select>
+        <mat-icon matPrefix>person</mat-icon>
+      </mat-form-field>
+
+      <!-- Estado -->
+      <mat-form-field appearance="outline">
+        <mat-label>Estado</mat-label>
+        <mat-select [(ngModel)]="filters.equipmentStatusId">
+          <mat-option [value]="''">Todos</mat-option>
+          <mat-option *ngFor="let status of statuses" [value]="status.value">
+            {{ status.label }}
+          </mat-option>
+        </mat-select>
+        <mat-icon matPrefix>check_circle</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <div class="filters-actions">
+      <button mat-button class="clear-btn" (click)="clearFilters()">
+        <mat-icon>clear</mat-icon>
+        Limpiar filtros
+      </button>
+      <button mat-raised-button class="apply-btn" (click)="applyFilters()">
+        <mat-icon>filter_list</mat-icon>
+        Aplicar filtros
+      </button>
+    </div>
+  </mat-card-content>
+</mat-card>
