@@ -14,6 +14,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '../../../../core/services/auth.service';
+import { EquipmentHistoryDialogComponent } from './component/equipment-history/equipment-history-dialog.component';
 
 @Component({
   standalone: true,
@@ -60,6 +61,13 @@ export class EquipmentsComponent implements OnInit {
       ? [...this.columnsBase, 'actions']
       : this.columnsBase;
   }
+   openHistoryDialog(equipment: Equipment): void {
+    this.dialog.open(EquipmentHistoryDialogComponent, {
+      width: '600px',
+      maxWidth: '95vw',
+      data: { equipment }
+    });
+  }
   openCreateDialog(): void {
     this.dialog
       .open(EquipmentFormComponent, {
@@ -72,6 +80,7 @@ export class EquipmentsComponent implements OnInit {
         }
       });
   }
+  
 
   openEditDialog(equipment: Equipment): void {
     this.dialog

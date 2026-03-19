@@ -39,8 +39,6 @@ export class EquipmentService {
 
   constructor(private http: HttpClient) {}
 
-
-
   getEquipments(): Observable<Equipment[]> {
     const params = new HttpParams().set(
       'expand',
@@ -174,14 +172,12 @@ export class EquipmentService {
       .pipe(map((response) => response.data));
   }
 
-  changeEquipmentState(equipmentId: string, stateId: string, changedBy?: string): Observable<Equipment> {
-    const body: any = { stateId };
-    if (changedBy) body.changedBy = changedBy;
-    
+  // - Cambiar estado manualmente
+  changeEquipmentState(equipmentId: string, newStateId: string, changedBy: string = 'system'): Observable<Equipment> {
     return this.http
       .patch<SingleResponse<Equipment>>(
         `${this.baseUrl}${this.endpoints.equipments}/${equipmentId}/state`,
-        body
+        { stateId: newStateId, changedBy }
       )
       .pipe(map((response) => response.data));
   }

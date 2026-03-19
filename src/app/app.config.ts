@@ -1,4 +1,4 @@
-import { ApplicationConfig } from '@angular/core';
+import { ApplicationConfig, LOCALE_ID } from '@angular/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './core/interceptors/auth.interceptor'; 
@@ -17,6 +17,10 @@ export const MY_DATE_FORMATS = {
     monthYearA11yLabel: 'MMMM YYYY',
   },
 };
+import { registerLocaleData } from '@angular/common';
+import localeEs from '@angular/common/locales/es';
+registerLocaleData(localeEs);
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
@@ -24,6 +28,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([authInterceptor])),
     provideNativeDateAdapter(), 
     { provide: MAT_DATE_LOCALE, useValue: 'es-ES' }, // 👈 Español
-    { provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMATS }, 
+    { provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMATS },
+     { provide: LOCALE_ID, useValue: 'es' }   
   ]
 };
