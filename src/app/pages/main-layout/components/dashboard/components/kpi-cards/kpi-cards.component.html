@@ -1,0 +1,45 @@
+<div class="kpi-grid">
+  <!-- Reparaciones del mes -->
+  <app-kpi-card
+    title="Reparaciones del mes"
+    [value]="data.monthlyRepairs"
+    icon="event"
+    color="primary">
+  </app-kpi-card>
+
+  <!-- Técnicos activos -->
+  <app-kpi-card
+    title="Técnicos activos"
+    [value]="data.activeTechnicians"
+    icon="people"
+    color="info">
+  </app-kpi-card>
+
+  <!-- Tiempo promedio -->
+  <app-kpi-card
+    title="Tiempo promedio"
+    [value]="data.avgRepairTime | safeNumber"
+    unit="horas"
+    icon="schedule"
+    color="warning">
+  </app-kpi-card>
+
+  <!-- Disponibilidad -->
+  <app-kpi-card
+    title="Disponibilidad"
+    [value]="data.availabilityPercentage | safeNumber"
+    unit="%"
+    icon="check_circle"
+    color="success">
+  </app-kpi-card>
+
+  <!-- Alertas (solo Admin) -->
+  @if (role === 'Administrator') {
+    <app-kpi-card
+      title="Alertas mantenimiento"
+      [value]="data.maintenanceAlerts"
+      icon="warning"
+      color="danger">
+    </app-kpi-card>
+  }
+</div>
