@@ -1,9 +1,349 @@
 .dashboard-container {
-      padding: 2rem;
+  padding: 16px;
+  min-height: 100vh;
+  background: #f8f9fa;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  // ========== HEADER ==========
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(128, 0, 32, 0.05);
+
+    h1 {
+      font-size: 20px;
+      font-weight: 500;
+      color: #800020;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      &::before {
+        content: 'dashboard';
+        font-family: 'Material Icons';
+        font-size: 20px;
+      }
     }
-    .mt-4 {
-      margin-top: 2rem;      
+
+    .date {
+      color: #666;
+      font-size: 12px;
+      margin: 0;
     }
-    .graphs-card {
-      padding: 25px;
+  }
+
+  // ========== FILTROS RÁPIDOS ==========
+  .quick-filters {
+    background: white;
+    border-radius: 8px;
+    padding: 12px;
+    box-shadow: 0 1px 3px rgba(128, 0, 32, 0.05);
+
+    .filters-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+
+      .filter-chip {
+        display: flex;
+        align-items: center;
+        background: #f5f5f5;
+        border-radius: 20px;
+        padding: 2px 8px 2px 4px;
+        border: 1px solid #e0e0e0;
+        cursor: pointer;
+        transition: all 0.2s;
+
+        &:hover {
+          background: #e9ecef;
+          border-color: #800020;
+        }
+
+        mat-icon {
+          font-size: 16px;
+          width: 16px;
+          height: 16px;
+          color: #800020;
+          margin-right: 4px;
+        }
+
+        .chip-label {
+          font-size: 11px;
+          font-weight: 500;
+          color: #333;
+        }
+
+        .chip-value {
+          font-size: 11px;
+          color: #800020;
+          font-weight: 600;
+          margin-left: 4px;
+        }
+
+        .chip-arrow {
+          font-size: 14px;
+          width: 14px;
+          height: 14px;
+          color: #666;
+          margin-left: 4px;
+        }
+      }
+
+      .filter-actions {
+        display: flex;
+        gap: 6px;
+        margin-left: auto;
+
+        button {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          font-size: 11px;
+          padding: 0 10px;
+          height: 28px;
+          line-height: 28px;
+          border-radius: 20px;
+
+          mat-icon {
+            font-size: 14px;
+            width: 14px;
+            height: 14px;
+          }
+        }
+
+        .clear-btn {
+          border: 1px solid #ddd;
+          color: #666;
+          background: white;
+        }
+
+        .apply-btn {
+          background: #800020 !important;
+          color: white !important;
+          border: none;
+        }
+      }
     }
+  }
+
+  // ========== KPI CARDS CON TENDENCIA ==========
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+
+    @media (max-width: 1200px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    @media (max-width: 768px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .kpi-card {
+      background: white;
+      border-radius: 10px;
+      padding: 12px;
+      box-shadow: 0 1px 3px rgba(128, 0, 32, 0.05);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(128, 0, 32, 0.1);
+      }
+
+      .kpi-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+
+        .kpi-title {
+          font-size: 11px;
+          font-weight: 500;
+          color: #666;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        mat-icon {
+          font-size: 18px;
+          width: 18px;
+          height: 18px;
+          color: #800020;
+        }
+      }
+
+      .kpi-main {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+
+        .kpi-value {
+          font-size: 22px;
+          font-weight: 700;
+          color: #333;
+        }
+
+        .kpi-trend {
+          display: flex;
+          align-items: center;
+          gap: 2px;
+          font-size: 11px;
+          font-weight: 500;
+          padding: 2px 6px;
+          border-radius: 12px;
+
+          &.up {
+            background: #e8f5e8;
+            color: #1b5e20;
+          }
+
+          &.down {
+            background: #ffebee;
+            color: #b71c1c;
+          }
+
+          mat-icon {
+            font-size: 12px;
+            width: 12px;
+            height: 12px;
+          }
+        }
+      }
+    }
+  }
+
+  // ========== TABS DE CONTENIDO ==========
+  .content-tabs {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(128, 0, 32, 0.05);
+    overflow: hidden;
+
+    .tab-header {
+      display: flex;
+      border-bottom: 1px solid #f0f0f0;
+      background: #fafafa;
+
+      .tab-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        font-size: 12px;
+        font-weight: 500;
+        color: #666;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s;
+        border-bottom: 2px solid transparent;
+
+        mat-icon {
+          font-size: 16px;
+          width: 16px;
+          height: 16px;
+        }
+
+        &:hover {
+          color: #800020;
+          background: #f5f5f5;
+        }
+
+        &.active {
+          color: #800020;
+          border-bottom-color: #800020;
+          background: white;
+        }
+      }
+    }
+
+    .tab-content {
+      padding: 16px;
+
+      .tab-pane {
+        display: none;
+
+        &.active {
+          display: block;
+        }
+      }
+    }
+  }
+
+  // ========== GRÁFICOS ==========
+  .charts-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+
+    @media (max-width: 992px) {
+      grid-template-columns: 1fr;
+    }
+
+    .chart-card {
+      border-radius: 8px;
+      background: white;
+      box-shadow: 0 1px 3px rgba(128, 0, 32, 0.05);
+
+      mat-card-header {
+        padding: 8px 12px 0;
+        
+        mat-card-title {
+          font-size: 13px;
+          font-weight: 500;
+          color: #800020;
+        }
+      }
+
+      mat-card-content {
+        padding: 8px;
+        height: 200px;
+      }
+    }
+  }
+
+  // ========== TABLAS ==========
+  .tables-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+
+    @media (max-width: 992px) {
+      grid-template-columns: 1fr;
+    }
+
+    .table-card {
+      border-radius: 8px;
+      background: white;
+      box-shadow: 0 1px 3px rgba(128, 0, 32, 0.05);
+
+      mat-card-header {
+        padding: 8px 12px 0;
+        
+        mat-card-title {
+          font-size: 13px;
+          font-weight: 500;
+          color: #800020;
+        }
+      }
+
+      mat-card-content {
+        padding: 8px;
+        max-height: 200px;
+        overflow-y: auto;
+      }
+    }
+  }
+}
