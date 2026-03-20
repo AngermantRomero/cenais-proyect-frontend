@@ -1,167 +1,142 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
-import * as echarts from 'echarts/core';
-import { PieChart } from 'echarts/charts';
-import { TooltipComponent, LegendComponent } from 'echarts/components'; // 👈 QUITAR GraphicComponent
-import { CanvasRenderer } from 'echarts/renderers';
-import type { EChartsCoreOption } from 'echarts/core';
-import { EquipmentStatus } from '../../../../../../core/interfaces/dashboard.interface';
-
-echarts.use([PieChart, TooltipComponent, LegendComponent, CanvasRenderer]);
+import { MatCardModule } from '@angular/material/card';
+import { EquipmentService } from '../../../../../../core/services/equipement.service';
 
 @Component({
   selector: 'app-status-chart',
   standalone: true,
-  imports: [CommonModule, NgxEchartsDirective],
-  providers: [provideEchartsCore({ echarts })],
-  template: `
-    <div echarts [options]="chartOptions" class="chart-container"></div>
-  `,
-  styles: [`
-    .chart-container {
-      width: 100%;
-      height: 200px;
-    }
-  `]
+  imports: [CommonModule, MatCardModule],
+  templateUrl: './status-chart.component.html',
+  styleUrls: ['./status-chart.component.scss']
 })
-export class StatusChartComponent implements OnInit {
-  @Input() set data(value: EquipmentStatus | null) {
-    if (value && (value.operational > 0 || value.inRepair > 0 || value.retired > 0 || value.maintenance > 0)) {
-      console.log('🥧 Datos para gráfico de estado:', value);
-      this.statusData = value;
-      this.updateChartOptions();
-    } else {
-      this.setDefaultData();
-    }
-  }
+export class StatusChartComponent implements OnInit, OnChanges {
+  @Input() siteId: string = '';
+  @Input() typeId: string = '';
+  @Input() statusId: string = '';
+  @Input() filtersApplied: boolean = false;
+  
+  statuses: { label: string; value: number; color: string; percentage: number }[] = [];
+  total: number = 0;
+  isLoading: boolean = false;
 
-  statusData: EquipmentStatus = {
-    operational: 0,
-    inRepair: 0,
-    retired: 0,
-    maintenance: 0
+  private statusColors: { [key: string]: string } = {
+    'Operacional': '#4caf50',
+    'En reparación': '#ff9800',
+    'Mantenimiento': '#2196f3',
+    'De baja': '#9e9e9e',
+    'Dañado': '#f44336',
+    'default': '#800020'
   };
 
-  chartOptions: EChartsCoreOption = {};
+  constructor(private equipmentService: EquipmentService) {}
 
-  ngOnInit(): void {
-    if (this.statusData.operational === 0 && 
-        this.statusData.inRepair === 0 && 
-        this.statusData.retired === 0 && 
-        this.statusData.maintenance === 0) {
-      this.setDefaultData();
-    } else {
-      this.initializeChartOptions();
-      this.updateChartOptions();
+  ngOnInit() {
+    this.loadData();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (this.filtersApplied) {
+      this.loadData();
     }
   }
 
-  private setDefaultData(): void {
-    this.statusData = {
-      operational: 45,
-      inRepair: 8,
-      retired: 3,
-      maintenance: 4
-    };
-    this.initializeChartOptions();
-    this.updateChartOptions();
-  }
-
-  private initializeChartOptions(): void {
-    const total = this.getTotal();
+  private loadData(): void {
+    this.isLoading = true;
     
-    this.chartOptions = {
-      tooltip: {
-        trigger: 'item',
-        formatter: '{b}: {c} ({d}%)'
+    const filters: any = {};
+    if (this.siteId) filters.siteId = this.siteId;
+    if (this.typeId) filters.typeId = this.typeId;
+    if (this.statusId) filters.statusId = this.statusId;
+    
+    this.equipmentService.getEquipmentsFiltered(filters).subscribe({
+      next: (equipos) => {
+        this.processEquipmentData(equipos);
+        this.isLoading = false;
       },
-      legend: {
-        orient: 'vertical',
-        right: 10,
-        top: 50, 
-        itemGap: 12,
-        itemWidth: 10,
-        itemHeight: 10,
-        textStyle: { 
-          fontSize: 11,
-          fontWeight: 'normal'
-        },
-        formatter: (name: string) => {
-          const data = this.getDataArray();
-          const item = data.find(d => d.name === name);
-          return `${name}: ${item?.value || 0}`;
-        }
-      },
-      title: {
-        text: `Total: ${total}`,
-        left: 'right',
-        top: 10,
-        textStyle: {
-          color: '#800020',
-          fontSize: 14,
-          fontWeight: 'bold'
-        }
-      },
-      series: [
-        {
-          type: 'pie',
-          radius: ['45%', '65%'],
-          center: ['35%', '55%'],
-          avoidLabelOverlap: true,
-          label: { show: false },
-          emphasis: {
-            scale: true,
-            label: { 
-              show: true, 
-              fontSize: 11,
-              fontWeight: 'bold'
-            }
-          },
-          data: this.getDataArray()
-        }
-      ]
-    };
+      error: (err) => {
+        console.error('Error cargando equipos:', err);
+        this.loadSampleData();
+        this.isLoading = false;
+      }
+    });
   }
 
-  private getDataArray(): any[] {
-    return [
-      { value: this.statusData.operational, name: 'Operacional', itemStyle: { color: '#1b5e20' } },
-      { value: this.statusData.inRepair, name: 'En reparación', itemStyle: { color: '#e65100' } },
-      { value: this.statusData.maintenance, name: 'Mantenimiento', itemStyle: { color: '#0d47a1' } },
-      { value: this.statusData.retired, name: 'De baja', itemStyle: { color: '#b71c1c' } }
+  private processEquipmentData(equipos: any[]): void {
+    const statusCount = new Map<string, number>();
+    
+    equipos.forEach(equipo => {
+      const stateName = equipo.currentState?.name || 'Sin estado';
+      statusCount.set(stateName, (statusCount.get(stateName) || 0) + 1);
+    });
+    
+    this.total = equipos.length;
+    
+    this.statuses = Array.from(statusCount.entries())
+      .map(([label, value]) => ({
+        label,
+        value,
+        color: this.statusColors[label] || this.statusColors['default'],
+        percentage: this.total > 0 ? Math.round((value / this.total) * 100) : 0
+      }))
+      .sort((a, b) => b.value - a.value);
+  }
+
+  // NUEVO MÉTODO: Genera el path para cada segmento del donut
+  getSlicePath(index: number): string {
+    if (this.statuses.length === 0) return '';
+    
+    // Calcular ángulo inicial y final para este segmento
+    let startAngle = 0;
+    for (let i = 0; i < index; i++) {
+      startAngle += (this.statuses[i].percentage / 100) * 360;
+    }
+    
+    const endAngle = startAngle + (this.statuses[index].percentage / 100) * 360;
+    
+    // Convertir ángulos a radianes
+    const startRad = (startAngle - 90) * Math.PI / 180;
+    const endRad = (endAngle - 90) * Math.PI / 180;
+    
+    // Radio exterior e interior
+    const outerRadius = 40;
+    const innerRadius = 28;
+    
+    // Centro
+    const cx = 50;
+    const cy = 50;
+    
+    // Puntos del arco exterior
+    const startXOuter = cx + outerRadius * Math.cos(startRad);
+    const startYOuter = cy + outerRadius * Math.sin(startRad);
+    const endXOuter = cx + outerRadius * Math.cos(endRad);
+    const endYOuter = cy + outerRadius * Math.sin(endRad);
+    
+    // Puntos del arco interior
+    const startXInner = cx + innerRadius * Math.cos(startRad);
+    const startYInner = cy + innerRadius * Math.sin(startRad);
+    const endXInner = cx + innerRadius * Math.cos(endRad);
+    const endYInner = cy + innerRadius * Math.sin(endRad);
+    
+    // Flag para arco grande (si es más de 180 grados)
+    const largeArcFlag = (endAngle - startAngle) > 180 ? 1 : 0;
+    
+    // Construir el path
+    return `
+      M ${startXOuter} ${startYOuter}
+      A ${outerRadius} ${outerRadius} 0 ${largeArcFlag} 1 ${endXOuter} ${endYOuter}
+      L ${endXInner} ${endYInner}
+      A ${innerRadius} ${innerRadius} 0 ${largeArcFlag} 0 ${startXInner} ${startYInner}
+      Z
+    `;
+  }
+
+  private loadSampleData(): void {
+    this.total = 4;
+    this.statuses = [
+      { label: 'Operacional', value: 2, color: '#4caf50', percentage: 50 },
+      { label: 'En reparación', value: 1, color: '#ff9800', percentage: 25 },
+      { label: 'Dañado', value: 1, color: '#f44336', percentage: 25 }
     ];
-  }
-
-  private getTotal(): number {
-    return this.statusData.operational +
-           this.statusData.inRepair +
-           this.statusData.retired +
-           this.statusData.maintenance;
-  }
-
-  private updateChartOptions(): void {
-    if (!this.statusData) {
-      console.warn('⚠️ No hay datos de estado para actualizar el gráfico');
-      return;
-    }
-
-    const total = this.getTotal();
-    const data = this.getDataArray();
-    
-    // Crear copia profunda del objeto para evitar referencias
-    const options = JSON.parse(JSON.stringify(this.chartOptions));
-    
-    // ✅ ACTUALIZAR DATOS DE LA SERIE
-    if (options.series && options.series[0]) {
-      options.series[0].data = data;
-    }
-    
-    // ✅ ACTUALIZAR TÍTULO (TOTAL)
-    if (options.title) {
-      options.title.text = `Total: ${total}`;
-    }
-
-    this.chartOptions = options;
   }
 }

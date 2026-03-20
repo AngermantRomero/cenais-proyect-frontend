@@ -43,7 +43,7 @@
         <mat-select formControlName="makerId" required>
           @for (maker of makers; track maker.idMaker) {
             <mat-option [value]="maker.idMaker">
-              {{maker.brand}} @if (maker.country?.name) { ({{maker.country.name}})}
+              {{maker.brand}} @if (maker.country.name) { ({{maker.country.name}})}
             </mat-option>
           }
         </mat-select>

@@ -1,0 +1,57 @@
+<div class="status-chart-container">
+  <!-- Header -->
+  <div class="chart-header">
+    <h3>🥧 Estado de Equipos</h3>
+  </div>
+
+  <div class="chart-content">
+    <!-- Donut Chart -->
+    <div class="donut-container">
+      <div class="donut">
+        <svg viewBox="0 0 100 100">
+          <!-- Círculo de fondo -->
+          <circle cx="50" cy="50" r="40" fill="none" stroke="#f0f0f0" stroke-width="15"/>
+          
+          <!-- Segmentos usando path -->
+          <ng-container *ngFor="let status of statuses; let i = index">
+            <path
+              *ngIf="status.percentage > 0"
+              [attr.d]="getSlicePath(i)"
+              [attr.fill]="status.color"
+              stroke="white"
+              stroke-width="1"
+            />
+          </ng-container>
+          
+          <!-- Círculo interior blanco -->
+          <circle cx="50" cy="50" r="28" fill="white"/>
+        </svg>
+        
+        <!-- Total en el centro -->
+        <div class="donut-center">
+          <span class="total-number">{{ total }}</span>
+          <span class="total-label">equipos</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lista de estados -->
+    <div class="status-list">
+      <div *ngFor="let status of statuses" class="status-item">
+        <div class="status-info">
+          <span class="color-dot" [style.background]="status.color"></span>
+          <span class="status-label">{{ status.label }}</span>
+        </div>
+        <div class="status-values">
+          <span class="status-count">{{ status.value }}</span>
+          <span class="status-percentage">{{ status.percentage }}%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" 
+               [style.width.%]="status.percentage"
+               [style.background]="status.color"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

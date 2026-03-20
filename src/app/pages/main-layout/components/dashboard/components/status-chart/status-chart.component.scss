@@ -1,0 +1,129 @@
+.status-chart-container {
+  padding: 16px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  height: 100%; // Ocupa todo el espacio disponible
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  
+  h3 {
+    margin: 0;
+    color: #333;
+    font-size: 1.1rem;
+  }
+  
+}
+
+.chart-content {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  flex: 1;
+  min-height: 0; // Permite que se ajuste
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+}
+
+.donut-container {
+  flex: 0 0 200px;
+  
+  .donut {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    
+    svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(0deg);
+    }
+    
+    .donut-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      
+      .total-number {
+        display: block;
+        font-size: 2rem;
+        font-weight: 600;
+        color: #333;
+        line-height: 1;
+      }
+      
+      .total-label {
+        font-size: 0.8rem;
+        color: #666;
+      }
+    }
+  }
+}
+
+.status-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.status-item {
+  .status-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+    
+    .color-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    
+    .status-label {
+      font-size: 0.9rem;
+      color: #555;
+      font-weight: 500;
+    }
+  }
+  
+  .status-values {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+    font-size: 0.85rem;
+    
+    .status-count {
+      font-weight: 600;
+      color: #333;
+    }
+    
+    .status-percentage {
+      color: #666;
+    }
+  }
+  
+  .progress-bar {
+    height: 6px;
+    background: #f0f0f0;
+    border-radius: 3px;
+    overflow: hidden;
+    
+    .progress-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+  }
+}

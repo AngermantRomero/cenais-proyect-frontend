@@ -134,96 +134,6 @@
     }
   }
 
-  // ========== KPI CARDS CON TENDENCIA ==========
-  .kpi-grid {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 12px;
-
-    @media (max-width: 1200px) {
-      grid-template-columns: repeat(3, 1fr);
-    }
-
-    @media (max-width: 768px) {
-      grid-template-columns: repeat(2, 1fr);
-    }
-
-    .kpi-card {
-      background: white;
-      border-radius: 10px;
-      padding: 12px;
-      box-shadow: 0 1px 3px rgba(128, 0, 32, 0.05);
-      display: flex;
-      flex-direction: column;
-      transition: transform 0.2s;
-
-      &:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(128, 0, 32, 0.1);
-      }
-
-      .kpi-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 8px;
-
-        .kpi-title {
-          font-size: 11px;
-          font-weight: 500;
-          color: #666;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-        }
-
-        mat-icon {
-          font-size: 18px;
-          width: 18px;
-          height: 18px;
-          color: #800020;
-        }
-      }
-
-      .kpi-main {
-        display: flex;
-        align-items: baseline;
-        justify-content: space-between;
-
-        .kpi-value {
-          font-size: 22px;
-          font-weight: 700;
-          color: #333;
-        }
-
-        .kpi-trend {
-          display: flex;
-          align-items: center;
-          gap: 2px;
-          font-size: 11px;
-          font-weight: 500;
-          padding: 2px 6px;
-          border-radius: 12px;
-
-          &.up {
-            background: #e8f5e8;
-            color: #1b5e20;
-          }
-
-          &.down {
-            background: #ffebee;
-            color: #b71c1c;
-          }
-
-          mat-icon {
-            font-size: 12px;
-            width: 12px;
-            height: 12px;
-          }
-        }
-      }
-    }
-  }
-
   // ========== TABS DE CONTENIDO ==========
   .content-tabs {
     background: white;
@@ -286,30 +196,35 @@
   .charts-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
+    gap: 25px;
+    width: 100%;
+    align-items: stretch;
 
-    @media (max-width: 992px) {
+    @media (max-width: 1024px) {
       grid-template-columns: 1fr;
     }
 
     .chart-card {
       border-radius: 8px;
       background: white;
-      box-shadow: 0 1px 3px rgba(128, 0, 32, 0.05);
-
-      mat-card-header {
-        padding: 8px 12px 0;
-        
-        mat-card-title {
-          font-size: 13px;
-          font-weight: 500;
-          color: #800020;
-        }
-      }
-
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important;
+      display: flex;
+      flex-direction: column;
+      height: 450px;
+      min-height: 380px; 
       mat-card-content {
-        padding: 8px;
-        height: 200px;
+        padding: 20px;
+         display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 380px; 
+      }
+      app-monthly-chart,
+      app-status-chart {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        flex: 1;
       }
     }
   }

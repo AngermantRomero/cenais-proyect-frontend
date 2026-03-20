@@ -163,6 +163,36 @@ export class EquipmentService {
       .get<ArrayResponse<Equipment>>(`${this.baseUrl}${this.endpoints.equipments}/by-date/${date}`)
       .pipe(map((response) => response.data));
   }
+  getEquipmentsFiltered(filters: {
+  siteId?: string;
+  typeId?: string;
+  statusId?: string;
+}): Observable<Equipment[]> {
+  let params = new HttpParams().set(
+    'expand',
+    'maker,model,typeEquipement,currentState,site,site.province'
+  );
+  
+  // Agregar filtros si existen
+  if (filters.siteId) {
+    params = params.set('siteId', filters.siteId);
+  }
+  
+  if (filters.typeId) {
+    params = params.set('typeId', filters.typeId);
+  }
+  
+  if (filters.statusId) {
+    params = params.set('statusId', filters.statusId);
+  }
+  
+  console.log('🔍 Filtros aplicados:', filters);
+  console.log('📡 Params:', params.toString());
+  
+  return this.http
+    .get<ArrayResponse<Equipment>>(`${this.baseUrl}${this.endpoints.equipments}`, { params })
+    .pipe(map((response) => response.data));
+}
 
   // ==================== HISTORIAL DE ESTADOS ====================
 

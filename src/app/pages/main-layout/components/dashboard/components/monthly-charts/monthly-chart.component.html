@@ -1,0 +1,26 @@
+<div class="monthly-chart-container">
+  <!-- Título -->
+  <div class="chart-title">
+    <h3>📊 Reparaciones por Mes</h3>
+  </div>
+
+  <!-- Área del gráfico -->
+  <div class="chart-area">
+    <!-- Línea base (eje X) -->
+    <div class="baseline"></div>
+    
+    <!-- Contenedor de barras -->
+    <div class="bars-container">
+      <div *ngFor="let total of totals; let idx = index" class="bar-wrapper">
+        <!-- Barra que crece hacia ARRIBA -->
+        <div class="bar" 
+             [style.height]="getBarHeight(total)"
+             [class.low-value]="total === 0">
+          <span class="bar-value">{{ total }}</span>
+        </div>
+        <!-- Mes debajo de la barra -->
+        <div class="month-label">{{ months[idx] }}</div>
+      </div>
+    </div>
+  </div>
+</div>

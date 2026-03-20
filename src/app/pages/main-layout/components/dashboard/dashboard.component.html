@@ -82,23 +82,28 @@
         <!-- Pestaña Gráficos -->
         <div class="tab-pane" [class.active]="activeTab === 'charts'">
           <div class="charts-grid">
-            <mat-card class="chart-card">
-              <mat-card-header>
-                <mat-card-title>📈 Reparaciones por Mes</mat-card-title>
-              </mat-card-header>
-              <mat-card-content>
-                <app-monthly-chart [data]="dashboardData.monthlyRepairs"></app-monthly-chart>
-              </mat-card-content>
-            </mat-card>
+             <mat-card class="chart-card">
+      <mat-card-content>
+       <app-monthly-chart 
+  [siteId]="selectedSiteId"
+  [typeId]="selectedTypeId"
+  [statusId]="selectedEquipmentStatusId"
+  [filtersApplied]="filtersApplied">
+</app-monthly-chart>
+      </mat-card-content>
+    </mat-card>
 
-            <mat-card class="chart-card">
-              <mat-card-header>
-                <mat-card-title>🥧 Estado de Equipos</mat-card-title>
-              </mat-card-header>
-              <mat-card-content>
-                <app-status-chart [data]="dashboardData.equipmentStatus"></app-status-chart>
-              </mat-card-content>
-            </mat-card>
+            <!-- Gráfico de estados - con filtros -->
+  <mat-card class="chart-card">
+    <mat-card-content>
+      <app-status-chart 
+        [siteId]="selectedSiteId"
+        [typeId]="selectedTypeId"
+        [statusId]="selectedEquipmentStatusId"
+        [filtersApplied]="filtersApplied">
+      </app-status-chart>
+    </mat-card-content>
+  </mat-card>
           </div>
         </div>
 

@@ -1,165 +1,162 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
-import * as echarts from 'echarts/core';
-import { BarChart } from 'echarts/charts';
-import {
-  GridComponent,
-  TooltipComponent,
-  LegendComponent,
-  TitleComponent
-} from 'echarts/components';
-import { CanvasRenderer } from 'echarts/renderers';
-import type { EChartsCoreOption } from 'echarts/core';
-import { MonthlyRepairs } from '../../../../../../core/interfaces/dashboard.interface';
+import { MatCardModule } from '@angular/material/card';
+import { RepairService } from '../../../../../../core/services/repair.service';
 
-echarts.use([BarChart, GridComponent, TooltipComponent, LegendComponent, TitleComponent, CanvasRenderer]);
+
+interface MonthData {
+  year: number;
+  month: number;
+  name: string;
+  count: number;
+}
 
 @Component({
   selector: 'app-monthly-chart',
   standalone: true,
-  imports: [CommonModule, NgxEchartsDirective],
-  providers: [provideEchartsCore({ echarts })],
-  template: `
-    <div echarts [options]="chartOptions" class="chart-container"></div>
-  `,
-  styles: [`
-    .chart-container {
-      width: 100%;
-      height: 200px;
-    }
-  `]
+  imports: [CommonModule, MatCardModule],
+  templateUrl: './monthly-chart.component.html',
+  styleUrls: ['./monthly-chart.component.scss']
 })
-export class MonthlyChartComponent implements OnInit {
-  @Input() set data(value: MonthlyRepairs[] | null) {
-    if (value && value.length > 0) {
-      console.log('📊 Datos para gráfico mensual:', value);
-      this.chartData = value;
-      this.updateChartOptions();
-    } else {
-      this.setDefaultData();
+export class MonthlyChartComponent implements OnInit, OnChanges {
+  @Input() siteId: string = '';
+  @Input() typeId: string = '';
+  @Input() statusId: string = '';
+  @Input() filtersApplied: boolean = false;
+  
+  // Datos del gráfico
+  months: string[] = [];
+  totals: number[] = [];
+  maxValue: number = 10;
+  
+  private monthNames = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+
+  constructor(private repairService: RepairService) {}
+
+  ngOnInit() {
+    this.loadData();
+  }
+  
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['siteId'] || changes['typeId'] || changes['statusId'] || changes['filtersApplied']) {
+      if (this.filtersApplied) {
+        this.loadData();
+      } else {
+        this.clearData();
+      }
     }
   }
 
-  chartData: MonthlyRepairs[] = [];
-  chartOptions: EChartsCoreOption = {};
-
-  ngOnInit(): void {
-    if (this.chartData.length === 0) {
-      this.setDefaultData();
-    } else {
-      this.initializeChartOptions();
-      this.updateChartOptions();
-    }
-  }
-
-  private setDefaultData(): void {
-    this.chartData = [
-      { month: '01', year: 2026, completed: 12, pending: 5, inProgress: 3 },
-      { month: '02', year: 2026, completed: 15, pending: 4, inProgress: 6 },
-      { month: '03', year: 2026, completed: 18, pending: 7, inProgress: 4 }
-    ];
-    this.initializeChartOptions();
-    this.updateChartOptions();
-  }
-
-  private initializeChartOptions(): void {
-    this.chartOptions = {
-      tooltip: {
-        trigger: 'axis',
-        axisPointer: { type: 'shadow' }
+  private loadData(): void {
+    const filters: any = {};
+    
+    if (this.siteId) filters.siteId = this.siteId;
+    if (this.typeId) filters.typeId = this.typeId;
+    if (this.statusId) filters.statusId = this.statusId;
+    
+    console.log('📊 Cargando reparaciones con filtros:', filters);
+    
+    this.repairService.getRepairs(filters).subscribe({
+      next: (reparaciones) => {
+        console.log('📊 Reparaciones recibidas:', reparaciones.length);
+        this.processRepairsByMonth(reparaciones);
       },
-      legend: {
-        data: ['Completadas', 'En progreso', 'Pendientes'],
-        bottom: 0,
-        left: 'center',
-        icon: 'circle',
-        itemWidth: 8,
-        itemHeight: 8,
-        textStyle: { fontSize: 10 }
-      },
-      grid: {
-        left: '8%',
-        right: '5%',
-        bottom: '20%',
-        top: '10%',
-        containLabel: true
-      },
-      xAxis: {
-        type: 'category',
-        data: [],
-        axisLabel: {
-          fontSize: 9,
-          rotate: 0
-        }
-      },
-      yAxis: {
-        type: 'value',
-        name: 'Cantidad',
-        nameTextStyle: { fontSize: 9 },
-        axisLabel: { fontSize: 9 },
-        splitLine: { lineStyle: { color: '#f0f0f0' } }
-      },
-      series: [
-        {
-          name: 'Completadas',
-          type: 'bar',
-          data: [],
-          itemStyle: { color: '#1b5e20' },
-          barWidth: 8
-        },
-        {
-          name: 'En progreso',
-          type: 'bar',
-          data: [],
-          itemStyle: { color: '#0d47a1' },
-          barWidth: 8
-        },
-        {
-          name: 'Pendientes',
-          type: 'bar',
-          data: [],
-          itemStyle: { color: '#e65100' },
-          barWidth: 8
-        }
-      ]
-    };
-  }
-
-  private updateChartOptions(): void {
-    if (!this.chartData || this.chartData.length === 0) {
-      console.warn('⚠️ No hay datos para actualizar el gráfico');
-      return;
-    }
-
-    const months = this.chartData.map(item => {
-      const date = new Date(item.year, parseInt(item.month) - 1);
-      return date.toLocaleDateString('es-ES', { month: 'short' });
+      error: (err) => {
+        console.error('Error cargando reparaciones:', err);
+        this.setSampleData();
+      }
     });
+  }
 
-    const completedData = this.chartData.map(item => item.completed);
-    const inProgressData = this.chartData.map(item => item.inProgress);
-    const pendingData = this.chartData.map(item => item.pending);
-
-    // Crear copia profunda del objeto para evitar referencias
-    const options = JSON.parse(JSON.stringify(this.chartOptions));
+  private processRepairsByMonth(reparaciones: any[]): void {
+    const today = new Date();
+    const monthsData: MonthData[] = []; // <-- AHORA CON TIPO DEFINIDO
     
-    // ✅ VERIFICAR QUE LAS PROPIEDADES EXISTEN ANTES DE ASIGNAR
-    if (options.xAxis) {
-      options.xAxis.data = months;
-    } else {
-      console.error('❌ xAxis no está definido en chartOptions');
+    // Generar array con los últimos 4 meses
+    for (let i = 3; i >= 0; i--) {
+      const date = new Date(today.getFullYear(), today.getMonth() - i, 1);
+      monthsData.push({
+        year: date.getFullYear(),
+        month: date.getMonth() + 1,
+        name: this.monthNames[date.getMonth()],
+        count: 0
+      });
     }
     
-    if (options.series && options.series.length >= 3) {
-      options.series[0].data = completedData;
-      options.series[1].data = inProgressData;
-      options.series[2].data = pendingData;
-    } else {
-      console.error('❌ series no está definido correctamente en chartOptions');
-    }
+    // Contar reparaciones por mes
+    reparaciones.forEach(rep => {
+      if (rep.createdAt) {
+        const repDate = new Date(rep.createdAt);
+        const repYear = repDate.getFullYear();
+        const repMonth = repDate.getMonth() + 1;
+        
+        const monthData = monthsData.find(m => m.year === repYear && m.month === repMonth);
+        if (monthData) {
+          monthData.count++;
+        }
+      }
+    });
+    
+    this.months = monthsData.map(m => m.name);
+    this.totals = monthsData.map(m => m.count);
+    this.maxValue = Math.max(...this.totals, 5);
+    
+    console.log('📊 Meses:', this.months);
+    console.log('📊 Totales:', this.totals);
+  }
 
-    this.chartOptions = options;
-    console.log('✅ Gráfico actualizado:', this.chartOptions);
+  private clearData(): void {
+    const today = new Date();
+    const monthsData: MonthData[] = [];
+    
+    for (let i = 3; i >= 0; i--) {
+      const date = new Date(today.getFullYear(), today.getMonth() - i, 1);
+      monthsData.push({
+        year: date.getFullYear(),
+        month: date.getMonth() + 1,
+        name: this.monthNames[date.getMonth()],
+        count: 0
+      });
+    }
+    
+    this.months = monthsData.map(m => m.name);
+    this.totals = [0, 0, 0, 0];
+    this.maxValue = 5;
+  }
+
+  private setSampleData(): void {
+    const today = new Date();
+    const monthsData: MonthData[] = [];
+    
+    for (let i = 3; i >= 0; i--) {
+      const date = new Date(today.getFullYear(), today.getMonth() - i, 1);
+      monthsData.push({
+        year: date.getFullYear(),
+        month: date.getMonth() + 1,
+        name: this.monthNames[date.getMonth()],
+        count: Math.floor(Math.random() * 8) + 1 // Datos aleatorios para ejemplo
+      });
+    }
+    
+    this.months = monthsData.map(m => m.name);
+    this.totals = monthsData.map(m => m.count);
+    this.maxValue = Math.max(...this.totals, 5);
+  }
+
+  getBarHeight(value: number): string {
+    if (this.maxValue === 0) return '20px';
+    const percentage = (value / this.maxValue) * 100;
+    return `${Math.max(20, Math.min(180, percentage * 1.5))}px`;
+  }
+  
+  getGridValue(index: number): number {
+    const values = [
+      this.maxValue, 
+      Math.round(this.maxValue * 0.75), 
+      Math.round(this.maxValue * 0.5), 
+      Math.round(this.maxValue * 0.25), 
+      0
+    ];
+    return values[index];
   }
 }
