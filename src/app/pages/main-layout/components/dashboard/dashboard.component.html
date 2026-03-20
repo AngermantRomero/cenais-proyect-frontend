@@ -112,19 +112,25 @@
           <div class="tables-grid">
             <mat-card class="table-card">
               <mat-card-header>
-                <mat-card-title>🔧 Top Técnicos</mat-card-title>
+                 <!-- TOP-Tecnicos-->
               </mat-card-header>
               <mat-card-content>
-                <app-top-technicians [data]="dashboardData.topTechnicians"></app-top-technicians>
+                <app-top-technicians [siteId]="selectedSiteId"
+          [typeId]="selectedTypeId"
+          [statusId]="selectedEquipmentStatusId"
+          [filtersApplied]="filtersApplied"></app-top-technicians>
               </mat-card-content>
             </mat-card>
 
             <mat-card class="table-card">
               <mat-card-header>
-                <mat-card-title>⚠️ Top Fallas</mat-card-title>
+                     <!--Top Fallas -->
               </mat-card-header>
               <mat-card-content>
-                <app-top-failures [data]="dashboardData.topFailures"></app-top-failures>
+                <app-top-failures  [siteId]="selectedSiteId"
+          [typeId]="selectedTypeId"
+          [statusId]="selectedEquipmentStatusId"
+          [filtersApplied]="filtersApplied"></app-top-failures>
               </mat-card-content>
             </mat-card>
           </div>

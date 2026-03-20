@@ -230,35 +230,55 @@
   }
 
   // ========== TABLAS ==========
-  .tables-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
+.tables-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
 
-    @media (max-width: 992px) {
-      grid-template-columns: 1fr;
+  @media (max-width: 992px) {
+    grid-template-columns: 1fr;
+  }
+
+  .table-card {
+    border-radius: 12px;
+    background: white;
+    box-shadow: 0 2px 12px rgba(128, 0, 32, 0.08);
+    overflow: hidden;
+    
+    mat-card-header {
+      padding: 16px 20px;
+      background: #fafafa;
+      border-bottom: 1px solid #f0f0f0;
+      
+      mat-card-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #800020;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0;
+      }
     }
 
-    .table-card {
-      border-radius: 8px;
-      background: white;
-      box-shadow: 0 1px 3px rgba(128, 0, 32, 0.05);
-
-      mat-card-header {
-        padding: 8px 12px 0;
-        
-        mat-card-title {
-          font-size: 13px;
-          font-weight: 500;
-          color: #800020;
-        }
+    mat-card-content {
+      padding: 0;
+      max-height: 400px; // Aumentado
+      overflow-y: auto;
+      
+      &::-webkit-scrollbar {
+        width: 8px;
       }
-
-      mat-card-content {
-        padding: 8px;
-        max-height: 200px;
-        overflow-y: auto;
+      
+      &::-webkit-scrollbar-track {
+        background: #f0f0f0;
+      }
+      
+      &::-webkit-scrollbar-thumb {
+        background: #800020;
+        border-radius: 4px;
       }
     }
   }
+}
 }

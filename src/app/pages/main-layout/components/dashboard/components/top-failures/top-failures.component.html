@@ -1,0 +1,38 @@
+<div class="top-failures-container">
+  <div class="table-header">
+    <h4>⚠️ Top Fallas</h4>
+    @if (isLoading) {
+      <span class="loading-spinner">Cargando...</span>
+    }
+  </div>
+  
+  @if (!isLoading) {
+    <div class="table-wrapper">
+      <table class="failures-table">
+        <thead>
+          <tr>
+            <th>Equipo</th>
+            <th>Modelo</th>
+            <th>Fallas</th>
+            <th>Última Falla</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (failure of failures; track failure.equipmentId) {
+            <tr>
+              <td class="serial">{{ failure.serialNumber }}</td>
+              <td class="model">{{ failure.model }}</td>
+              <td class="count">{{ failure.failureCount }}</td>
+              <td class="date">{{ failure.lastFailureDate }}</td>
+            </tr>
+          }
+          @empty {
+            <tr>
+              <td colspan="4" class="empty">No hay datos disponibles</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

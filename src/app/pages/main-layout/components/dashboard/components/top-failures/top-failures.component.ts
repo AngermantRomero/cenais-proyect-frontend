@@ -1,153 +1,123 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatTableModule } from '@angular/material/table';
-import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
-import { MatChipsModule } from '@angular/material/chips';
-import { EquipmentFailure } from '../../../../../../core/interfaces/dashboard.interface';
+import { RepairService } from '../../../../../../core/services/repair.service';
+import { Repair } from '../../../../../../core/interfaces/repair.interface';
 
 @Component({
   selector: 'app-top-failures',
   standalone: true,
-  imports: [
-    CommonModule,
-    MatTableModule,
-    MatCardModule,
-    MatIconModule,
-    MatChipsModule
-  ],
-  template: `
-    <div class="failures-container">
-      <table mat-table [dataSource]="data" class="failures-table">
-        <!-- Equipo -->
-        <ng-container matColumnDef="equipment">
-          <th mat-header-cell *matHeaderCellDef>Equipo</th>
-          <td mat-cell *matCellDef="let failure">
-            <div class="equipment-info">
-              <mat-icon>devices</mat-icon>
-              <div class="details">
-                <strong>{{ failure.serialNumber }}</strong>
-                <small>{{ failure.model }}</small>
-              </div>
-            </div>
-          </td>
-        </ng-container>
-
-        <!-- Fallas -->
-        <ng-container matColumnDef="failures">
-          <th mat-header-cell *matHeaderCellDef>Fallas</th>
-          <td mat-cell *matCellDef="let failure">
-            <span class="badge failure">{{ failure.failureCount }}</span>
-          </td>
-        </ng-container>
-
-        <!-- Última Falla -->
-        <ng-container matColumnDef="lastFailure">
-          <th mat-header-cell *matHeaderCellDef>Última Falla</th>
-          <td mat-cell *matCellDef="let failure">
-            <span class="date-badge">
-              <mat-icon>event</mat-icon>
-              {{ failure.lastFailureDate | date:'dd/MM/yyyy' }}
-            </span>
-          </td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-
-        <tr class="mat-row no-data-row" *matNoDataRow>
-          <td class="mat-cell" [attr.colspan]="displayedColumns.length">
-            No hay datos de fallas disponibles
-          </td>
-        </tr>
-      </table>
-    </div>
-  `,
-  styles: [`
-    .failures-container {
-      .failures-table {
-        width: 100%;
-
-        .equipment-info {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-
-          mat-icon {
-            color: #b71c1c;
-            font-size: 20px;
-          }
-
-          .details {
-            display: flex;
-            flex-direction: column;
-
-            strong {
-              font-size: 14px;
-            }
-
-            small {
-              font-size: 11px;
-              color: #666;
-            }
-          }
-        }
-
-        .badge {
-          padding: 4px 12px;
-          border-radius: 16px;
-          font-size: 12px;
-          font-weight: 500;
-
-          &.failure {
-            background: #ffebee;
-            color: #b71c1c;
-          }
-        }
-
-        .date-badge {
-          display: flex;
-          align-items: center;
-          gap: 4px;
-          padding: 4px 8px;
-          background: #f5f5f5;
-          border-radius: 16px;
-          font-size: 12px;
-          
-          mat-icon {
-            font-size: 16px;
-            width: 16px;
-            height: 16px;
-          }
-        }
-
-        .mat-column-equipment {
-          min-width: 200px;
-        }
-
-        .mat-column-failures {
-          width: 100px;
-          text-align: center;
-        }
-
-        .mat-column-lastFailure {
-          width: 150px;
-        }
-      }
-
-      .no-data-row {
-        height: 60px;
-        
-        .mat-cell {
-          text-align: center;
-          color: #999;
-          font-style: italic;
-        }
-      }
-    }
-  `]
+  imports: [CommonModule],
+  templateUrl: './top-failures.component.html',
+  styleUrls: ['./top-failures.component.scss']
 })
-export class TopFailuresComponent {
-  @Input() data: EquipmentFailure[] = [];
-  displayedColumns: string[] = ['equipment', 'failures', 'lastFailure'];
+export class TopFailuresComponent implements OnInit, OnChanges {
+  @Input() filtersApplied: boolean = false;
+  @Input() siteId: string = '';
+  @Input() typeId: string = '';
+  @Input() statusId: string = '';
+  
+  failures: {
+    equipmentId: string;
+    serialNumber: string;
+    model: string;
+    failureCount: number;
+    lastFailureDate: string;
+  }[] = [];
+  
+  isLoading: boolean = false;
+
+  constructor(private repairService: RepairService) {}
+
+  ngOnInit() {
+    this.loadData();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (this.filtersApplied) {
+      this.loadData();
+    }
+  }
+
+  private loadData(): void {
+    this.isLoading = true;
+    
+    const filters: any = {};
+    if (this.siteId) filters.siteId = this.siteId;
+    if (this.typeId) filters.typeId = this.typeId;
+    if (this.statusId) filters.statusId = this.statusId;
+    
+    console.log('⚠️ Cargando fallas con filtros:', filters);
+    
+    this.repairService.getRepairs(filters).subscribe({
+      next: (reparaciones) => {
+        this.processFailuresData(reparaciones);
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error loading repairs:', err);
+        this.loadSampleData();
+        this.isLoading = false;
+      }
+    });
+  }
+
+  private processFailuresData(reparaciones: Repair[]): void {
+    // Agrupar reparaciones por equipo
+    const equipmentMap = new Map<string, {
+      equipmentId: string;
+      serialNumber: string;
+      model: string;
+      failureCount: number;
+      lastFailureDate: Date | null;
+    }>();
+    
+    reparaciones.forEach(rep => {
+      const equipId = rep.equipmentId;
+      const equipment = rep.equipment;
+      const modelName = equipment?.model?.modelName || 'N/A';
+      const serial = equipment?.serialNumber || 'N/A';
+      
+      if (!equipmentMap.has(equipId)) {
+        equipmentMap.set(equipId, {
+          equipmentId: equipId,
+          serialNumber: serial,
+          model: modelName,
+          failureCount: 0,
+          lastFailureDate: null
+        });
+      }
+      
+      const equip = equipmentMap.get(equipId)!;
+      equip.failureCount++;
+      
+      // Actualizar última fecha de falla
+      if (rep.createdAt) {
+        const repDate = new Date(rep.createdAt);
+        if (!equip.lastFailureDate || repDate > equip.lastFailureDate) {
+          equip.lastFailureDate = repDate;
+        }
+      }
+    });
+    
+    // Convertir a array y ordenar
+    this.failures = Array.from(equipmentMap.values())
+      .sort((a, b) => b.failureCount - a.failureCount)
+      .slice(0, 5) // Top 5
+      .map(f => ({
+        ...f,
+        lastFailureDate: f.lastFailureDate 
+          ? f.lastFailureDate.toLocaleDateString('es-ES')
+          : 'N/A'
+      }));
+    
+    console.log('⚠️ Top fallas:', this.failures);
+  }
+
+  private loadSampleData(): void {
+    this.failures = [
+      { equipmentId: '1', serialNumber: 'SN-001', model: 'Corolla', failureCount: 5, lastFailureDate: '01/03/2026' },
+      { equipmentId: '2', serialNumber: 'SN-002', model: 'Yaris', failureCount: 3, lastFailureDate: '28/02/2026' },
+      { equipmentId: '3', serialNumber: 'SN-003', model: 'Hilux', failureCount: 2, lastFailureDate: '05/03/2026' }
+    ];
+  }
 }

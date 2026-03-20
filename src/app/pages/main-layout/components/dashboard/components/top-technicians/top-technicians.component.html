@@ -1,0 +1,38 @@
+<div class="top-technicians-container">
+  <div class="table-header">
+    <h4>🔧 Top Técnicos</h4>
+    @if (isLoading) {
+      <span class="loading-spinner">Cargando...</span>
+    }
+  </div>
+  
+  @if (!isLoading) {
+    <div class="table-wrapper">
+      <table class="tech-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Técnico</th>
+            <th>Completadas</th>
+            <th>Tiempo Promedio</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (tech of technicians; track tech.id; let i = $index) {
+            <tr>
+              <td class="rank">{{ i + 1 }}</td>
+              <td class="name">{{ tech.name }}</td>
+              <td class="count">{{ tech.completedRepairs }}</td>
+              <td class="time">{{ tech.avgRepairTime }}h</td>
+            </tr>
+          }
+          @empty {
+            <tr>
+              <td colspan="4" class="empty">No hay datos disponibles</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
