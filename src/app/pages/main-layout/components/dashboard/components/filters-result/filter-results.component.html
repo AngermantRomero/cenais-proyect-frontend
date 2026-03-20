@@ -1,0 +1,71 @@
+@if (filtersApplied) {
+  <mat-expansion-panel class="filter-results-panel" [expanded]="panelOpenState" (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <mat-icon class="panel-icon">insights</mat-icon>
+        <span class="panel-title">RESULTADOS DE FILTROS</span>
+        <span class="total-badge">{{ totalEquipos }} equipos</span>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <div class="results-container">
+      <!-- Por Sitio -->
+      <div class="result-section">
+        <div class="section-header">
+          <mat-icon class="section-icon">place</mat-icon>
+          <h3>Por Sitio</h3>
+        </div>
+        <div class="items-list">
+          @for (sitio of sitiosData; track sitio.nombre) {
+            <div class="result-item">
+              <span class="item-label">
+                <span class="item-badge" [style.background]="'#800020'">{{ sitio.code }}</span>
+                {{ sitio.nombre }}
+              </span>
+              <span class="item-value">{{ sitio.count }} equipos</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <mat-divider [vertical]="true" class="divider-vertical"></mat-divider>
+
+      <!-- Por Tipo -->
+      <div class="result-section">
+        <div class="section-header">
+          <mat-icon class="section-icon">category</mat-icon>
+          <h3>Por Tipo de Equipo</h3>
+        </div>
+        <div class="items-list">
+          @for (tipo of tiposData; track tipo.nombre) {
+            <div class="result-item">
+              <span class="item-label">{{ tipo.nombre }}</span>
+              <span class="item-value">{{ tipo.count }} equipos</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <mat-divider [vertical]="true" class="divider-vertical"></mat-divider>
+
+      <!-- Por Estado -->
+      <div class="result-section">
+        <div class="section-header">
+          <mat-icon class="section-icon">check_circle</mat-icon>
+          <h3>Por Estado</h3>
+        </div>
+        <div class="items-list">
+          @for (estado of estadosData; track estado.nombre) {
+            <div class="result-item">
+              <span class="item-label">
+                <span class="status-dot" [style.background]="estado.color"></span>
+                {{ estado.nombre }}
+              </span>
+              <span class="item-value">{{ estado.count }} equipos</span>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </mat-expansion-panel>
+}

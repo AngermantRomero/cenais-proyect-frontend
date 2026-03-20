@@ -5,7 +5,7 @@
     <p class="date">{{ currentDate | date:'EEEE, d MMMM yyyy' }}</p>
   </div>
 
-  <!-- Filtros Rápidos (solo Sitio, Tipo, Técnico, Estado) -->
+  <!-- Filtros Rápidos (solo Sitio, Tipo, Estado) -->
   <div class="quick-filters">
     <div class="filters-row">
       <!-- Sitio CHIP -->
@@ -24,13 +24,6 @@
         <mat-icon class="chip-arrow">arrow_drop_down</mat-icon>
       </div>
 
-      <!-- Técnico CHIP -->
-      <div class="filter-chip" (click)="openTechnicianSelector()">
-        <mat-icon>person</mat-icon>
-        <span class="chip-label">Técnico</span>
-        <span class="chip-value">{{ selectedTechnicianName || 'Todos' }}</span>
-        <mat-icon class="chip-arrow">arrow_drop_down</mat-icon>
-      </div>
 
       <!-- Estado CHIP -->
       <div class="filter-chip" (click)="openEquipmentStatusSelector()">
@@ -52,7 +45,13 @@
       </div>
     </div>
   </div>
-
+ <!-- RESULTADOS DE FILTROS - AQUÍ VA -->
+  <app-filter-results 
+    [selectedSiteId]="selectedSiteId"
+    [selectedTypeId]="selectedTypeId"
+    [selectedStatusId]="selectedEquipmentStatusId"
+     [filtersApplied]="filtersApplied">
+  </app-filter-results>
   <!-- Loading Spinner -->
   @if (isLoading) {
     <div class="loading-container">
@@ -62,81 +61,6 @@
 
   <!-- Contenido -->
   @if (!isLoading && dashboardData) {
-    <!-- KPIs con tendencia -->
-    <div class="kpi-grid">
-      <div class="kpi-card">
-        <div class="kpi-header">
-          <span class="kpi-title">Reparaciones</span>
-          <mat-icon>event</mat-icon>
-        </div>
-        <div class="kpi-main">
-          <span class="kpi-value">{{ dashboardData.kpis.monthlyRepairs }}</span>
-          <span class="kpi-trend up">
-            <mat-icon>arrow_upward</mat-icon> 8%
-          </span>
-        </div>
-      </div>
-
-      <div class="kpi-card">
-        <div class="kpi-header">
-          <span class="kpi-title">Técnicos</span>
-          <mat-icon>people</mat-icon>
-        </div>
-        <div class="kpi-main">
-          <span class="kpi-value">{{ dashboardData.kpis.activeTechnicians }}</span>
-          <span class="kpi-trend down">
-            <mat-icon>arrow_downward</mat-icon> 2%
-          </span>
-        </div>
-      </div>
-
-      <div class="kpi-card">
-        <div class="kpi-header">
-          <span class="kpi-title">Tiempo Prom</span>
-          <mat-icon>schedule</mat-icon>
-        </div>
-        <div class="kpi-main">
-          <span class="kpi-value">{{ dashboardData.kpis.avgRepairTime | safeNumber }}h</span>
-        </div>
-      </div>
-
-      <div class="kpi-card">
-        <div class="kpi-header">
-          <span class="kpi-title">Disponibilidad</span>
-          <mat-icon>check_circle</mat-icon>
-        </div>
-        <div class="kpi-main">
-          <span class="kpi-value">{{ dashboardData.kpis.availabilityPercentage | safeNumber }}%</span>
-          <span class="kpi-trend up">
-            <mat-icon>arrow_upward</mat-icon> 1%
-          </span>
-        </div>
-      </div>
-
-      <div class="kpi-card">
-        <div class="kpi-header">
-          <span class="kpi-title">Alertas</span>
-          <mat-icon>warning</mat-icon>
-        </div>
-        <div class="kpi-main">
-          <span class="kpi-value">{{ dashboardData.kpis.maintenanceAlerts }}</span>
-          <span class="kpi-trend up">
-            <mat-icon>arrow_upward</mat-icon> 1
-          </span>
-        </div>
-      </div>
-
-      <div class="kpi-card">
-        <div class="kpi-header">
-          <span class="kpi-title">Pendientes</span>
-          <mat-icon>pending</mat-icon>
-        </div>
-        <div class="kpi-main">
-          <span class="kpi-value">{{ dashboardData.kpis.monthlyRepairs - dashboardData.kpis.activeTechnicians }}</span>
-        </div>
-      </div>
-    </div>
-
     <!-- Tabs de contenido -->
     <div class="content-tabs">
       <div class="tab-header">

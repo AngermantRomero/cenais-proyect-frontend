@@ -16,7 +16,6 @@ import { EquipmentService } from '../../../../core/services/equipement.service';
 import { UserService } from '../../../../core/services/user.service'; 
 import { DashboardData, DashboardFilters } from '../../../../core/interfaces/dashboard.interface';
 import { DashboardFiltersComponent } from './components/filters/dashboard-filters.component';
-import { KpiCardsComponent } from './components/kpi-cards/kpi-cards.component';
 import { MonthlyChartComponent } from './components/monthly-charts/monthly-chart.component';
 import { StatusChartComponent } from './components/status-chart/status-chart.component';
 import { TopTechniciansComponent } from './components/top-technicians/top-technicians.component';
@@ -28,12 +27,11 @@ import { Site } from '../../../../core/interfaces/sites.interface';
 import { User } from '../../../../core/interfaces/user.interface';
 import { ArrayResponse } from '../../../../core/interfaces/http.responses.interface';
 import { EquipmentState } from '../../../../core/interfaces/equipement.interface';
-import { EquipmentStatusSelectorDialogComponent } from './components/dialogs/equipment-status-selector';
-
+import { EquipmentStatusSelectorDialogComponent } from './components/dialogs/equipment-status-selector.dialog';
+import { FilterResultsComponent } from './components/filters-result/filter-results.component';
 // Importaciones de diálogos
 import { SiteSelectorDialogComponent } from './components/dialogs/site-selector.dialog';
 import { TypeSelectorDialogComponent } from './components/dialogs/type-selector.dialog';
-import { TechnicianSelectorDialogComponent } from './components/dialogs/technician-selector.dialog';
 import { StatusSelectorDialogComponent } from './components/dialogs/status-selector.dialog';
 
 @Component({
@@ -50,13 +48,13 @@ import { StatusSelectorDialogComponent } from './components/dialogs/status-selec
     MatProgressSpinnerModule,
     MatButtonModule,
     DashboardFiltersComponent,
-    KpiCardsComponent,
     KpiCardComponent,
     SafeNumberPipe,
     MonthlyChartComponent,
     StatusChartComponent,
     TopTechniciansComponent,
-    TopFailuresComponent
+    TopFailuresComponent,
+    FilterResultsComponent
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
@@ -68,6 +66,14 @@ export class DashboardComponent implements OnInit {
   currentDate: Date = new Date();
   activeTab: 'charts' | 'tables' | 'map' = 'charts';
   equipmentStates: EquipmentState[] = [];
+  filtersApplied: boolean = false;
+
+  
+
+  // NUEVO: Para el componente filter-results
+  selectedSiteId: string = '';
+  selectedTypeId: string = '';
+  selectedEquipmentStatusId: string = '';
   
   // Filtros (sin fechas)
   filters: DashboardFilters = {
@@ -234,9 +240,11 @@ export class DashboardComponent implements OnInit {
         if (result.id === '') {
           this.filters.siteId = '';
           this.selectedSiteName = 'Todos';
+          this.selectedSiteId ='';
         } else {
           this.filters.siteId = result.id;
           this.selectedSiteName = `${result.code} - ${result.locality}`;
+          this.selectedSiteId=result.id;
         }
       }
     });
@@ -257,36 +265,16 @@ export class DashboardComponent implements OnInit {
         if (result.id === '') {
           this.filters.equipmentTypeId = '';
           this.selectedTypeName = 'Todos';
+          this.selectedSiteId='';
         } else {
           this.filters.equipmentTypeId = result.id;
           this.selectedTypeName = result.name;
+          this.selectedSiteId=result.id;
         }
       }
     });
   }
 
-  openTechnicianSelector(): void {
-    const dialogRef = this.dialog.open(TechnicianSelectorDialogComponent, {
-      width: '500px',
-      maxWidth: '95vw',
-      data: { 
-        technicians: this.technicians, 
-        selectedId: this.filters.technicianId 
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        if (result.id === '') {
-          this.filters.technicianId = '';
-          this.selectedTechnicianName = 'Todos';
-        } else {
-          this.filters.technicianId = result.id;
-          this.selectedTechnicianName = result.name;
-        }
-      }
-    });
-  }
 
  openEquipmentStatusSelector(): void {
   const dialogRef = this.dialog.open(EquipmentStatusSelectorDialogComponent, {
@@ -303,9 +291,11 @@ export class DashboardComponent implements OnInit {
       if (result.id === '') {
         this.filters.equipmentStatusId = '';
         this.selectedStatusLabel = 'Todos';
+        this.selectedEquipmentStatusId='';
       } else {
         this.filters.equipmentStatusId = result.id;
         this.selectedStatusLabel = result.name;
+        this.selectedEquipmentStatusId=result.id;
       }
       console.log('✅ Filtro de estado actualizado:', this.filters);
     }
@@ -316,6 +306,10 @@ export class DashboardComponent implements OnInit {
 
   applyFilters(): void {
     console.log('🔍 Aplicando filtros:', this.filters);
+    this.selectedSiteId = this.filters.siteId || '';
+   this.selectedTypeId = this.filters.equipmentTypeId || '';
+   this.selectedEquipmentStatusId = this.filters.equipmentStatusId || '';
+    this.filtersApplied = true;
     this.loadDashboardData(this.filters);
   }
 
@@ -324,12 +318,17 @@ export class DashboardComponent implements OnInit {
       siteId: '',
       equipmentTypeId: '',
       technicianId: '',
-      equipmentStatusId: ''
+      equipmentStatusId: '',
+      
     };
     this.selectedSiteName = '';
     this.selectedTypeName = '';
     this.selectedTechnicianName = '';
     this.selectedStatusLabel = '';
+    this.selectedSiteId ='';
+  this.selectedTypeId ='';
+  this.selectedEquipmentStatusId = '';
+   this.filtersApplied = false;
     this.loadDashboardData();
   }
 
